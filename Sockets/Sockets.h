@@ -16,4 +16,5 @@ FOUNDATION_EXPORT const unsigned char SocketsVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <Sockets/PublicHeader.h>
 
+#import "Sockets/WebRTCClient.h"
 
