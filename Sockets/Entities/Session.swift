@@ -36,7 +36,7 @@ public class Session: NSObject {
         }
     }
     
-    func dictionary() -> [String : Any] {
+    public func dictionary() -> [String : Any] {
         
         var dictionary = [String : Any]()
         
