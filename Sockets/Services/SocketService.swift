@@ -11,9 +11,32 @@ import SocketIO
 
 // change reason to enum with string
 
-public enum SocketServiceReason: String {
-    case request            = "Request"
-    case disconnect         = "Disconnect"
+@objc public enum SocketServiceReason: Int, RawRepresentable {
+    case request
+    case disconnect
+    
+    public typealias RawValue = String
+
+    public var rawValue: RawValue {
+        switch self {
+        case .request:
+            return "Request"
+        case .disconnect:
+            return "Disconnect"
+            
+        }
+    }
+    
+    public init?(rawValue: RawValue) {
+        switch rawValue {
+        case "Request":
+            self = .request
+        case "Disconnect":
+            self = .disconnect
+        default:
+            return nil
+        }
+    }
 }
 
 public final class SocketService: NSObject {

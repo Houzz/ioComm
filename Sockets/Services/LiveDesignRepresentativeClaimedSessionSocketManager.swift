@@ -9,25 +9,26 @@
 import Foundation
 import SocketIO
 
+@objc
 public protocol LiveDesignRepresentativeClaimedSessionSocketDelegate : class {
     
     // MARK: Sketch
     
-    func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didSetSketchWith sketchID: String, galleryID: String)
+    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didSetSketchWith sketchID: String, galleryID: String)
     
-    func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didRequestRefreshForSession session: Session)
+    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didRequestRefreshForSession session: Session)
     
-    func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
+    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
     
     // MARK: VOIP
     
-    func liveDesignRepresentativeClaimedSocketDidReceiveCall(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol)
+    @objc optional func liveDesignRepresentativeClaimedSocketDidReceiveCall(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol)
     
-    func liveDesignRepresentativeClaimedSocketDidDisconnectCall(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol)
+    @objc optional func liveDesignRepresentativeClaimedSocketDidDisconnectCall(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol)
     
 }
 
-public protocol LiveDesignRepresentativeClaimedSessionSocketProtocol {
+@objc public protocol LiveDesignRepresentativeClaimedSessionSocketProtocol {
     
     var delegate: LiveDesignRepresentativeClaimedSessionSocketDelegate? { get set }
     
@@ -124,7 +125,7 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     
     private func onRefresh(with session: Session) {
         self.session = session
-        delegate?.liveDesignRepresentativeClaimedSocket(self, didRequestRefreshForSession: self.session)
+        delegate?.liveDesignRepresentativeClaimedSocket?(self, didRequestRefreshForSession: self.session)
     }
     
     private func onSetSketch(with session: Session, payload: [String : Any]) {
@@ -133,13 +134,13 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
         let sketchID = payload["SketchId"] as! String
         let galleryID = payload["GalleryId"] as! String
         
-        delegate?.liveDesignRepresentativeClaimedSocket(self, didSetSketchWith: sketchID, galleryID: galleryID)
+        delegate?.liveDesignRepresentativeClaimedSocket?(self, didSetSketchWith: sketchID, galleryID: galleryID)
     }
     
     private func onClose(reason: SocketServiceReason) {
         rtcClient.disconnect()
         self.onClose?(self)
-        delegate?.liveDesignRepresentativeClaimedSocket(self, wasClosedDueTo: reason)
+        delegate?.liveDesignRepresentativeClaimedSocket?(self, wasClosedDueTo: reason)
     }
     
 }
@@ -155,11 +156,11 @@ extension LiveDesignRepresentativeClaimedSessionSocketManager : WebRTCClientDele
     }
     
     func webRTCClientDidRecieveIncomingCall(_ client: WebRTCClient!) {
-        delegate?.liveDesignRepresentativeClaimedSocketDidReceiveCall(self)
+        delegate?.liveDesignRepresentativeClaimedSocketDidReceiveCall?(self)
     }
     
     func webRTCClientDidDropIncomingCall(_ client: WebRTCClient!) {
-        delegate?.liveDesignRepresentativeClaimedSocketDidDisconnectCall(self)
+        delegate?.liveDesignRepresentativeClaimedSocketDidDisconnectCall?(self)
     }
 
 }

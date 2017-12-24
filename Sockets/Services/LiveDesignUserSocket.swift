@@ -9,26 +9,28 @@
 import Foundation
 import SocketIO
 
+@objc
 public protocol LiveDesignUserSocketDelegate: class {
 
     // MARK: Sketch
 
-    func liveDesignUserSocketDidRequestAddAllToCart(_ socket: LiveDesignUserSocketProtocol)
+    @objc optional func liveDesignUserSocketDidRequestAddAllToCart(_ socket: LiveDesignUserSocketProtocol)
 
-    func liveDesignUserSocketDidRequestRefresh(_ socket: LiveDesignUserSocketProtocol)
+    @objc optional func liveDesignUserSocketDidRequestRefresh(_ socket: LiveDesignUserSocketProtocol)
     
-    func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: String?)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: String?)
     
-    func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
     
     // MARK: VOIP
     
-    func liveDesignUserSocketDidReceiveCall(_ socket: LiveDesignUserSocketProtocol)
+    @objc optional func liveDesignUserSocketDidReceiveCall(_ socket: LiveDesignUserSocketProtocol)
     
-    func liveDesignUserSocketDidDisconnectCall(_ socket: LiveDesignUserSocketProtocol)
+    @objc optional func liveDesignUserSocketDidDisconnectCall(_ socket: LiveDesignUserSocketProtocol)
     
 }
 
+@objc
 public protocol LiveDesignUserSocketProtocol {
     
     var delegate: LiveDesignUserSocketDelegate? { get set }
@@ -163,22 +165,22 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     private func onClaim(with session: Session) {
         self.session = session
-        delegate?.liveDesignUserSocket(self, wasClaimedByRepresentative: session.representativeUsername)
+        delegate?.liveDesignUserSocket?(self, wasClaimedByRepresentative: session.representativeUsername)
     }
     
     private func onInvokeAddAllToCart() {
-        delegate?.liveDesignUserSocketDidRequestAddAllToCart(self)
+        delegate?.liveDesignUserSocketDidRequestAddAllToCart?(self)
     }
     
     private func onRefresh(with session: Session) {
         self.session = session
-        delegate?.liveDesignUserSocketDidRequestRefresh(self)
+        delegate?.liveDesignUserSocketDidRequestRefresh?(self)
     }
     
     private func onClose(reason: SocketServiceReason) {
         self.rtcClient?.disconnect()
         self.onClose?(self)
-        delegate?.liveDesignUserSocket(self, wasClosedDueTo: reason)
+        delegate?.liveDesignUserSocket?(self, wasClosedDueTo: reason)
     }
 
 }
@@ -194,11 +196,11 @@ extension LiveDesignUserSocketManager : WebRTCClientDelegate {
     }
     
     func webRTCClientDidRecieveIncomingCall(_ client: WebRTCClient!) {
-        delegate?.liveDesignUserSocketDidReceiveCall(self)
+        delegate?.liveDesignUserSocketDidReceiveCall?(self)
     }
     
     func webRTCClientDidDropIncomingCall(_ client: WebRTCClient!) {
-        delegate?.liveDesignUserSocketDidDisconnectCall(self)
+        delegate?.liveDesignUserSocketDidDisconnectCall?(self)
     }
 
 }
