@@ -32,6 +32,11 @@ public protocol LiveDesignRepresentativeClaimedSessionSocketProtocol {
     var delegate: LiveDesignRepresentativeClaimedSessionSocketDelegate? { get set }
     
     /**
+     Session that is currently handled by socket.
+     */
+    var session: Session { get }
+    
+    /**
      Called when the rep pressed “AddToCart” button in the uiu
      */
     func invokeAddToCart()

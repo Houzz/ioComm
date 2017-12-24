@@ -34,9 +34,14 @@ public protocol LiveDesignUserSocketProtocol {
     var delegate: LiveDesignUserSocketDelegate? { get set }
     
     /**
+     Session that is currently handled by socket.
+     */
+    var session: Session? { get }
+    
+    /**
      Register the user to the livedesign queue.
      */
-    func register(with username: String, completion: @escaping (String?)->())
+    func register(with username: String, completion: @escaping (Session?)->())
     
     /**
      Call when the user app makes the first setSketch and receives sketchId.
@@ -80,7 +85,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     // Mark: SocketManagerProtocol
     
-    func register(with username: String, completion: @escaping (String?)->()) {
+    func register(with username: String, completion: @escaping (Session?)->()) {
         
         if socket.status == .disconnected {
             socket.connect()
@@ -91,10 +96,8 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
             if let contents = payload[0] as? [String : Any] {
                 self?.session = Session(payload: contents)
                 self?.rtcClient?.start(withIdentifier: self?.session?.userClientID)
-
-                if let sessionID = self?.session?.identifier {
-                    completion(sessionID)
-                }
+                
+                completion(self?.session)
             } else {
                 completion(nil)
             }
