@@ -10,12 +10,12 @@ import Foundation
 
 public class Session: NSObject {
     
-    var status: String?
-    var identifier: String
-    var representativeUsername: String?
-    var username: String?
-    var userClientID: String?
-    var repClientID: String?
+    public var status: String?
+    public var identifier: String
+    public var representativeUsername: String?
+    public var username: String?
+    public var userClientID: String?
+    public var repClientID: String?
     
     public required init(payload: [String:Any]) {
         status                  = payload["Status"] as! String?
