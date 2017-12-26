@@ -10,55 +10,12 @@ import Foundation
 
 public class Session: NSObject {
     
-    public class User: NSObject {
-        public let displayName: String?
-        public let username: String?
-        public let profileImage: URL?
-        
-        public init(displayName: String?, username: String?, profileImage: URL?) {
-            self.displayName = displayName
-            self.username = username
-            self.profileImage = profileImage
-        }
-        
-        fileprivate init(payload: [String : Any]) {
-            displayName     = payload["UserDisplayName"] as! String?
-            username        = payload["UserName"] as! String?
-            
-            if let url = payload["ProfileImage"] as? String {
-                profileImage = URL(string: url)
-            } else {
-                profileImage = nil
-            }
-        }
-        
-        fileprivate convenience init?(payload: Any?) {
-            if let contents = payload as? [String : Any] {
-                self.init(payload: contents)
-            } else {
-                return nil
-            }
-        }
-        
-        internal func dictionary() -> [String : Any] {
-            var dictionary = [String : Any]()
-            
-            dictionary.safe(set: displayName, for: "UserDisplayName")
-            dictionary.safe(set: username, for: "UserName")
-            dictionary.safe(set: profileImage?.absoluteString, for: "ProfileImage")
-            
-            return dictionary
-        }
-
-    }
-    
-    
-    public var status: String?
+    public var status: String?      
     public var identifier: String
     public var userClientID: String?
     public var repClientID: String?
-    public var user: Session.User?
-    public var representative: Session.User?
+    public var user: User?
+    public var representative: User?
     
     public required init(payload: [String : Any]) {
         status                  = payload["Status"] as! String?
@@ -66,8 +23,8 @@ public class Session: NSObject {
         userClientID            = payload["UserClientId"] as! String?
         repClientID             = payload["RepClientId"] as! String?
         
-        user            = Session.User(payload: payload["User"])
-        representative  = Session.User(payload: payload["RepUser"])
+        user                    = User(payload: payload["User"])
+        representative          = User(payload: payload["RepUser"])
         
         super.init()
     }
@@ -95,14 +52,4 @@ public class Session: NSObject {
         return dictionary
     }
 
-}
-
-extension Dictionary {
-    
-    mutating func safe(set object: Value?, for key: Key) {
-        if let object = object {
-            self[key] = object
-        }
-    }
-    
 }

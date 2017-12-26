@@ -18,7 +18,7 @@ public protocol LiveDesignUserSocketDelegate: class {
 
     @objc optional func liveDesignUserSocketDidRequestRefresh(_ socket: LiveDesignUserSocketProtocol)
     
-    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: Session.User)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: User)
     
     @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
     
@@ -43,7 +43,7 @@ public protocol LiveDesignUserSocketProtocol {
     /**
      Register the user to the livedesign queue.
      */
-    func register(with user: Session.User, completion: @escaping (Session?)->())
+    func register(with user: User, completion: @escaping (Session?)->())
     
     /**
      Call when the user app makes the first setSketch and receives sketchId.
@@ -87,7 +87,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     // Mark: SocketManagerProtocol
     
-    func register(with user: Session.User, completion: @escaping (Session?)->()) {
+    func register(with user: User, completion: @escaping (Session?)->()) {
         
         if socket.status == .disconnected {
             socket.connect()

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		941C1AFC1FF28AFC00B8E28D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941C1AFB1FF28AFC00B8E28D /* User.swift */; };
+		941C1AFE1FF2966700B8E28D /* Dictionary+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941C1AFD1FF2966700B8E28D /* Dictionary+Extensions.swift */; };
 		94530CD31FEA8ED50091E391 /* Sockets.h in Headers */ = {isa = PBXBuildFile; fileRef = 94530CD11FEA8ED50091E391 /* Sockets.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		94530CE81FEA8F840091E391 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94530CDA1FEA8F840091E391 /* Session.swift */; };
 		94530CE91FEA8F840091E391 /* Peer.h in Headers */ = {isa = PBXBuildFile; fileRef = 94530CDC1FEA8F840091E391 /* Peer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -26,6 +28,8 @@
 
 /* Begin PBXFileReference section */
 		3EE4C3CB3B5702C7BE3E4BB9 /* Pods_Sockets.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sockets.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		941C1AFB1FF28AFC00B8E28D /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		941C1AFD1FF2966700B8E28D /* Dictionary+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extensions.swift"; sourceTree = "<group>"; };
 		94530CCE1FEA8ED50091E391 /* Sockets.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sockets.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94530CD11FEA8ED50091E391 /* Sockets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sockets.h; sourceTree = "<group>"; };
 		94530CD21FEA8ED50091E391 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -101,6 +105,8 @@
 			isa = PBXGroup;
 			children = (
 				94530CDA1FEA8F840091E391 /* Session.swift */,
+				941C1AFB1FF28AFC00B8E28D /* User.swift */,
+				941C1AFD1FF2966700B8E28D /* Dictionary+Extensions.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -270,7 +276,9 @@
 				94530CF01FEA8F840091E391 /* LiveDesignUserSocket.swift in Sources */,
 				94530CF31FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift in Sources */,
 				94530CF11FEA8F840091E391 /* LiveDesignRepresentativeClaimedSessionSocketManager.swift in Sources */,
+				941C1AFC1FF28AFC00B8E28D /* User.swift in Sources */,
 				94530CEC1FEA8F840091E391 /* Peer.m in Sources */,
+				941C1AFE1FF2966700B8E28D /* Dictionary+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
