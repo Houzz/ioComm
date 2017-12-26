@@ -17,8 +17,6 @@ typedef NS_ENUM(NSInteger, WebRTCClientState) {
     kWebRTCClientStateConnected,
 };
 
-static NSString * const KEY_INIT = @"init";
-
 @class WebRTCClient;
 @class SocketIOClient;
 @class Peer;
@@ -40,29 +38,12 @@ static NSString * const KEY_INIT = @"init";
 -(instancetype) initWebRTCClient:(id<WebRTCClientDelegate>)delegate
                           socket:(SocketIOClient*)socket;
 
-// for later implementation
-
-///**
-// Initiate a call with a user that has input identifier.
-// Once remote user accepts client will open up communication.
-// */
-//- (void)callToIdentifier:(NSString*)identifier completion:(void(^)(BOOL answered))completion;
-//
-///**
-// Answers an incoming call.
-// */
-//- (void)answerCall;
-
 /**
  Disconnect from RTC (also hangs up current call).
  */
 - (void)disconnect;
 
-// for removal
 - (void)startWithIdentifier:(NSString*)identifier;
-
-- (void)muteAllAudioIn;
-- (void)unmuteAllAudioIn;
 
 - (void)makeCallWithIdentifier:(NSString*)identifier completion:(void(^)(Peer*))completion;
 

@@ -24,6 +24,7 @@
 
 #import "SocketIOManagerCall.h"
 
+static NSString * const KEY_INIT = @"init";
 static NSString * const KEY_OFFER = @"offer";
 static NSString * const KEY_ANSWER = @"answer";
 static NSString * const KEY_CANDIDATE = @"candidate";
