@@ -6,7 +6,7 @@
 //  Copyright © 2560 Digix Technology. All rights reserved.
 //
 
-#import "Peer.h"
+#import "Peer+Private.h"
 #import "WebRTCClient+Private.h"
 
 @class RTCMediaConstraints;
@@ -15,18 +15,7 @@ static NSString *kARDAppClientErrorDomain = @"WebRTCClient";
 static NSInteger kARDAppClientErrorSetSDP = -4;
 static NSInteger kARDAppClientErrorCreateSDP = -3;
 
-@interface Peer () 
-@property (nonatomic) RTCPeerConnection *pc;
-@property (nonatomic) NSString *ID;
-@property (nonatomic) NSInteger endPoint;
-
-@property (nonatomic, weak) WebRTCClient *webRTCClient;
-
-@property (nonatomic) RTCAudioTrack *defaultAudioTrack;
-@end
-
 @implementation Peer
-
 
 -(instancetype) initWithWithId:(NSString *)ID
                       endPoint:(NSInteger)endPoint
@@ -34,8 +23,6 @@ static NSInteger kARDAppClientErrorCreateSDP = -3;
     
     
     if(self = [super init]){
-        
-        NSLog(@"new Peer id: %@",ID);
         
         self.webRTCClient = webRTCClient;
         
@@ -64,8 +51,6 @@ didCreateSessionDescription:(RTCSessionDescription *)sdp
     dispatch_async(dispatch_get_main_queue(), ^{
     if(error){ //code from apprtc
         
-        NSLog(@"error in didCreateSessionDescription: %@", error);
-        
         NSDictionary *userInfo = @{
                                    NSLocalizedDescriptionKey: @"Failed to create session description.",
                                    };
@@ -74,7 +59,6 @@ didCreateSessionDescription:(RTCSessionDescription *)sdp
                                    code:kARDAppClientErrorCreateSDP
                                userInfo:userInfo];
         [self.webRTCClient notifyError:sdpError];
-        NSLog(@"sdpError: %@", sdpError);
         return;
         
         
@@ -82,14 +66,10 @@ didCreateSessionDescription:(RTCSessionDescription *)sdp
     
     [peerConnection setLocalDescriptionWithDelegate:self sessionDescription:sdp];
     
-    NSDictionary *payload = @{ @"type":sdp.type,
-                               @"sdp":sdp.description};
-    
-    [self.webRTCClient sendMessage:self.ID type:sdp.type payload:payload];
-    NSLog(@"didCreateSessionDescription Sending: SDP \n %@", sdp.description);
-    // }
-    
-    
+        NSDictionary *payload = @{ @"type":sdp.type,
+                                   @"sdp":sdp.description};
+        
+        [self.webRTCClient sendMessage:self.ID type:sdp.type payload:payload];
     });
 }
 
@@ -99,7 +79,6 @@ didSetSessionDescriptionWithError:(NSError *)error{
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if (error) {
-            NSLog(@"Failed to set session description. Error: %@", error);
             NSDictionary *userInfo = @{
                                        NSLocalizedDescriptionKey: @"Failed to set session description.",
                                        };
@@ -133,7 +112,7 @@ didSetSessionDescriptionWithError:(NSError *)error{
 //onSignalingChange() in android
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
  signalingStateChanged:(RTCSignalingState)stateChanged{
-    NSLog(@"Signaling state changed: %d", stateChanged);
+
 }
 
 
@@ -227,7 +206,6 @@ didSetSessionDescriptionWithError:(NSError *)error{
 
 #pragma mark - Audio mute/unmute
 - (void)muteAudioIn {
-    NSLog(@"peer -> audio muted");
     
     RTCMediaStream *localStream = self.pc.localStreams[0];
     
@@ -245,7 +223,6 @@ didSetSessionDescriptionWithError:(NSError *)error{
 }
 
 - (void)unmuteAudioIn {
-    NSLog(@"audio unmuted");
     RTCMediaStream *localStream = self.pc.localStreams[0];
     
     //clear old stream from peerconnection

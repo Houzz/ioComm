@@ -7,7 +7,7 @@
 //
 
 #import "WebRTCClient+Private.h"
-#import "Peer.h"
+#import "Peer+Private.h"
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -30,7 +30,6 @@ static NSString *const kARDDefaultSTUNServerUrl =
         self.iceServers = [NSMutableArray arrayWithObject:[self defaultSTUNServer]];
         [self.iceServers addObject:[self defaultSTUNServer2]];
         
-        self.isSpeakerEnabled = NO;
         self.peers = [NSMutableDictionary new];
         self.allKeyInPeers = [NSMutableArray array];
         self.callbacks = [NSMutableDictionary dictionary];
@@ -73,6 +72,7 @@ static NSString *const kARDDefaultSTUNServerUrl =
 -(void)disconnect {
     [self.peers enumerateKeysAndObjectsUsingBlock:^(NSString*  _Nonnull key, Peer*  _Nonnull obj, BOOL * _Nonnull stop) {
         [obj.pc close];
+        [self.delegate webRTCClient:self didDropIncomingCallFromPeer:obj];
     }];
     self.peers = [NSMutableDictionary dictionary];
 }
@@ -85,10 +85,21 @@ static NSString *const kARDDefaultSTUNServerUrl =
 
 -(void)notifyRemoteStream:(RTCMediaStream *)stream {
     if (stream.audioTracks.count) {
-        [self.delegate webRTCClientDidRecieveIncomingCall:self];
+
+        Peer *peer = [self.peers objectForKey:self.allKeyInPeers.lastObject];
         
-        if (self.isSpeakerEnabled){
-            [self enableSpeaker]; //Use the "handsfree" speaker instead of the ear speaker.
+        if (self.onCall) {
+            
+            // waiting for expected call with callback
+            [self.timeoutCall invalidate];
+            void(^onCall)(Peer*) = self.onCall;
+            self.onCall = nil;
+            onCall(peer);
+            
+        } else {
+        
+            // notify for an incoming call
+            [self.delegate webRTCClient:self didRecieveIncomingCallFromPeer:peer];
         }
     }
 }
@@ -102,48 +113,60 @@ static NSString *const kARDDefaultSTUNServerUrl =
     
     [localStream addAudioTrack:[_factory audioTrackWithID:@"ARDAMSa0"]];
     
-    if (self.isSpeakerEnabled){
-        [self enableSpeaker];
-    }
-    
     return localStream;
 }
 
-#pragma mark - Commands
-
--(void)makeConnectionToIdentifier:(NSString*)identifier completion:(void(^)(NSDictionary *response))completion
+-(void)makeCallWithIdentifier:(NSString *)identifier
+                   completion:(void (^)(Peer *))completion
 {
-    [self sendMessage:identifier type:KEY_INIT payload:nil completion:completion];
-}
-
--(void)makeOfferToIdentifier:(NSString*)identifier completion:(void(^)(NSDictionary *response))completion
-{
-    Peer *peer = [self.peers objectForKey:identifier];
-    [peer.pc createOfferWithDelegate:peer constraints:[self defaultOfferConstraints]];
-}
-
--(void)makeAnswerToIdentifier:(NSString*)identifier offer:(NSDictionary*)offer completion:(void(^)(NSDictionary *response))completion
-{
-    Peer *peer = [self.peers objectForKey:identifier];
+    self.onCall = completion;
+    [self sendMessage:identifier type:KEY_INIT payload:nil];
     
-    NSString *type = [offer objectForKey:@"type"];
-    NSString *sdpPayload = [offer objectForKey:@"sdp"];
-    RTCSessionDescription *sdp = [[RTCSessionDescription alloc] initWithType:type sdp:sdpPayload];
+    __weak typeof(self) welf = self;
     
-    [peer.pc setRemoteDescriptionWithDelegate:peer sessionDescription:sdp];
-    [peer.pc createAnswerWithDelegate:peer constraints:[self defaultAnswerConstraints]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        welf.timeoutCall = [NSTimer scheduledTimerWithTimeInterval:10 repeats:NO block:^(NSTimer * _Nonnull timer) {
+            welf.onCall = nil;
+            completion(nil);
+        }];
+    });
 }
+
+//#pragma mark - Commands
+//
+//-(void)makeConnectionToIdentifier:(NSString*)identifier completion:(void(^)(NSDictionary *response))completion
+//{
+//    [self sendMessage:identifier type:KEY_INIT payload:nil completion:completion];
+//}
+//
+//-(void)makeOfferToIdentifier:(NSString*)identifier completion:(void(^)(NSDictionary *response))completion
+//{
+//    Peer *peer = [self.peers objectForKey:identifier];
+//    [peer.pc createOfferWithDelegate:peer constraints:[self defaultOfferConstraints]];
+//}
+//
+//-(void)makeAnswerToIdentifier:(NSString*)identifier offer:(NSDictionary*)offer completion:(void(^)(NSDictionary *response))completion
+//{
+//    Peer *peer = [self.peers objectForKey:identifier];
+//
+//    NSString *type = [offer objectForKey:@"type"];
+//    NSString *sdpPayload = [offer objectForKey:@"sdp"];
+//    RTCSessionDescription *sdp = [[RTCSessionDescription alloc] initWithType:type sdp:sdpPayload];
+//
+//    [peer.pc setRemoteDescriptionWithDelegate:peer sessionDescription:sdp];
+//    [peer.pc createAnswerWithDelegate:peer constraints:[self defaultAnswerConstraints]];
+//}
 
 #pragma mark - enable/disable speaker
 
 - (void)enableSpeaker {
     [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
-    self.isSpeakerEnabled = YES;
+//    self.isSpeakerEnabled = YES;
 }
 
 - (void)disableSpeaker {
     [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
-    self.isSpeakerEnabled = NO;
+//    self.isSpeakerEnabled = NO;
 }
 
 -(Peer *)addPeer:(NSString *)ID {
@@ -168,7 +191,7 @@ static NSString *const kARDDefaultSTUNServerUrl =
     [self.peers removeObjectForKey:peer.ID];
     [self.allKeyInPeers removeObject:peer.ID];
     
-    [self.delegate webRTCClientDidDropIncomingCall:self];
+    [self.delegate webRTCClient:self didDropIncomingCallFromPeer:peer];
 }
 
 - (void)sendMessage:(NSString *)to type:(NSString *)type payload:(NSDictionary *)payload {
@@ -353,10 +376,6 @@ static NSString *const kARDDefaultSTUNServerUrl =
     for(NSString *ID in self.allKeyInPeers) {
         Peer *peer = [self.peers objectForKey:ID];
         [peer unmuteAudioIn];
-    }
-    
-    if (self.isSpeakerEnabled) {
-        [self enableSpeaker];
     }
 
 }

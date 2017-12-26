@@ -9,8 +9,6 @@
 import Foundation
 import SocketIO
 
-// change reason to enum with string
-
 @objc public enum SocketServiceReason: Int, RawRepresentable {
     case request
     case disconnect

@@ -18,15 +18,15 @@ public protocol LiveDesignUserSocketDelegate: class {
 
     @objc optional func liveDesignUserSocketDidRequestRefresh(_ socket: LiveDesignUserSocketProtocol)
     
-    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: String?)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: Session.User)
     
     @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
     
     // MARK: VOIP
     
-    @objc optional func liveDesignUserSocketDidReceiveCall(_ socket: LiveDesignUserSocketProtocol)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, didReceiveCall call: Call)
     
-    @objc optional func liveDesignUserSocketDidDisconnectCall(_ socket: LiveDesignUserSocketProtocol)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, didDisconnectCall call: Call)
     
 }
 
@@ -43,7 +43,7 @@ public protocol LiveDesignUserSocketProtocol {
     /**
      Register the user to the livedesign queue.
      */
-    func register(with username: String, completion: @escaping (Session?)->())
+    func register(with user: Session.User, completion: @escaping (Session?)->())
     
     /**
      Call when the user app makes the first setSketch and receives sketchId.
@@ -58,7 +58,7 @@ public protocol LiveDesignUserSocketProtocol {
     /**
      Make a VOIP call to the representative.
      */
-    func makeCall()
+    func makeCall(completion: @escaping (Call?)->())
     
     /**
      Hangup.
@@ -87,13 +87,13 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     // Mark: SocketManagerProtocol
     
-    func register(with username: String, completion: @escaping (Session?)->()) {
+    func register(with user: Session.User, completion: @escaping (Session?)->()) {
         
         if socket.status == .disconnected {
             socket.connect()
             return
         }
-        socket.emitWithAck("session.register", username).timingOut(after: 1) { [weak self] payload in
+        socket.emitWithAck("session.register", user.dictionary()).timingOut(after: 5) { [weak self] payload in
 
             if let contents = payload[0] as? [String : Any] {
                 self?.session = Session(payload: contents)
@@ -123,9 +123,11 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
         }
     }
     
-    func makeCall() {
+    func makeCall(completion: @escaping (Call?)->()) {
         guard let session = self.session else { return }
-        self.rtcClient?.sendMessage(session.repClientID, type: KEY_INIT, payload: nil)
+        self.rtcClient?.makeCall(withIdentifier: session.repClientID, completion: { (peer) in
+            completion(peer != nil ? LiveDesignCall(peer: peer!) : nil)
+        })
     }
     
     func close() {
@@ -165,7 +167,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     private func onClaim(with session: Session) {
         self.session = session
-        delegate?.liveDesignUserSocket?(self, wasClaimedByRepresentative: session.representativeUsername)
+        delegate?.liveDesignUserSocket?(self, wasClaimedByRepresentative: session.representative!)
     }
     
     private func onInvokeAddAllToCart() {
@@ -195,12 +197,12 @@ extension LiveDesignUserSocketManager : WebRTCClientDelegate {
         
     }
     
-    func webRTCClientDidRecieveIncomingCall(_ client: WebRTCClient!) {
-        delegate?.liveDesignUserSocketDidReceiveCall?(self)
+    func webRTCClient(_ client: WebRTCClient!, didRecieveIncomingCallFrom peer: Peer!) {
+        delegate?.liveDesignUserSocket?(self, didReceiveCall: LiveDesignCall(peer: peer))
     }
     
-    func webRTCClientDidDropIncomingCall(_ client: WebRTCClient!) {
-        delegate?.liveDesignUserSocketDidDisconnectCall?(self)
+    func webRTCClient(_ client: WebRTCClient!, didDropIncomingCallFrom peer: Peer!) {
+        delegate?.liveDesignUserSocket?(self, didDisconnectCall: LiveDesignCall(peer: peer))
     }
 
 }

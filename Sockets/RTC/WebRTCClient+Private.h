@@ -39,8 +39,10 @@ static NSUInteger const MAX_PEER = 2;
 @property (nonatomic) NSString *currentPeerConnectionID;
 @property (nonatomic) NSMutableArray *allKeyInPeers;
 @property (nonatomic) NSMutableArray *iceServers;
-@property (nonatomic, assign) BOOL isSpeakerEnabled;
 @property (nonatomic, strong) NSString* callIdentifier;
+
+@property (nonatomic, copy) void(^onCall)(Peer*);
+@property (nonatomic, strong) NSTimer *timeoutCall;
 
 // temp - change to object that has timeout
 @property (nonatomic, strong) NSMutableDictionary<NSString*, void(^)(NSDictionary*)>* callbacks;

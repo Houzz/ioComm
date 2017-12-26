@@ -41,7 +41,7 @@ public protocol LiveDesignRepresentativeSocketProtocol {
      
      In case socket is not connected the function will initiate connection.
      */
-    func claim(sessionIdentifier: String?, with representativeName: String, completion: @escaping (LiveDesignRepresentativeClaimedSessionSocketProtocol?)->())
+    func claim(session: Session?, with representative: Session.User, completion: @escaping (LiveDesignRepresentativeClaimedSessionSocketProtocol?)->())
 
 }
 
@@ -72,8 +72,8 @@ internal class LiveDesignRepresentativeSocketManager: LiveDesignRepresentativeSo
         socket.emit("livedesign.join")
     }
     
-    func claim(sessionIdentifier: String?, with representativeName: String, completion: @escaping (LiveDesignRepresentativeClaimedSessionSocketProtocol?)->()) {
-        socket.emitWithAck("session.claim", sessionIdentifier ?? "nil", representativeName).timingOut(after: 30) { [weak self] payload in
+    func claim(session: Session?, with representative: Session.User, completion: @escaping (LiveDesignRepresentativeClaimedSessionSocketProtocol?)->()) {
+        socket.emitWithAck("session.claim", session?.identifier ?? "<null>", representative.dictionary()).timingOut(after: 10) { [weak self] payload in
             
             if let contents = payload[0] as? [String : Any], let socket = self?.socket, let rtcClient = self?.rtcClient {
                 let session = Session(payload: contents)

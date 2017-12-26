@@ -21,23 +21,21 @@ static NSString * const KEY_INIT = @"init";
 
 @class WebRTCClient;
 @class SocketIOClient;
+@class Peer;
 
 @protocol WebRTCClientDelegate <NSObject>
 @required
 - (void)onStatusChanged:(WebRTCClientState)newStatus;
 
 - (void)webRTCClient:(WebRTCClient*)client didReceiveError:(NSError*)error;
-- (void)webRTCClientDidRecieveIncomingCall:(WebRTCClient*)client;
-- (void)webRTCClientDidDropIncomingCall:(WebRTCClient*)client;
+- (void)webRTCClient:(WebRTCClient*)client didRecieveIncomingCallFromPeer:(Peer*)peer;
+- (void)webRTCClient:(WebRTCClient*)client didDropIncomingCallFromPeer:(Peer*)peer;
 @end
 
 @class Peer;
 
 @interface WebRTCClient : NSObject
 @property (nonatomic, weak) id<WebRTCClientDelegate> delegate;
-
-@property(nonatomic, assign, readonly) BOOL isSpeakerEnabled;
-
 
 -(instancetype) initWebRTCClient:(id<WebRTCClientDelegate>)delegate
                           socket:(SocketIOClient*)socket;
@@ -62,12 +60,10 @@ static NSString * const KEY_INIT = @"init";
 
 // for removal
 - (void)startWithIdentifier:(NSString*)identifier;
-- (void)sendMessage:(NSString *)to type:(NSString *)type payload:(NSDictionary *)payload;
-
-- (void)enableSpeaker;
-- (void)disableSpeaker;
 
 - (void)muteAllAudioIn;
 - (void)unmuteAllAudioIn;
+
+- (void)makeCallWithIdentifier:(NSString*)identifier completion:(void(^)(Peer*))completion;
 
 @end
