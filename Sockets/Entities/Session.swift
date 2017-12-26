@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Session: NSObject {
+open class Session: NSObject {
     
     public var status: String?      
     public var identifier: String
