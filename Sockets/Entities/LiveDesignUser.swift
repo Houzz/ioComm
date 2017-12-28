@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class User: NSObject {
+open class LiveDesignUser: NSObject {
     
     public let displayName: String?
     public let username: String?

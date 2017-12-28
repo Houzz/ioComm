@@ -8,14 +8,14 @@
 
 import Foundation
 
-open class Session: NSObject {
+open class LiveDesignSession: NSObject {
     
     public var status: String?      
     public var identifier: String
     public var userClientID: String?
     public var repClientID: String?
-    public var user: User?
-    public var representative: User?
+    public var user: LiveDesignUser?
+    public var representative: LiveDesignUser?
     
     public required init(payload: [String : Any]) {
         status                  = payload["Status"] as! String?
@@ -23,8 +23,8 @@ open class Session: NSObject {
         userClientID            = payload["UserClientId"] as! String?
         repClientID             = payload["RepClientId"] as! String?
         
-        user                    = User(payload: payload["User"])
-        representative          = User(payload: payload["RepUser"])
+        user                    = LiveDesignUser(payload: payload["User"])
+        representative          = LiveDesignUser(payload: payload["RepUser"])
         
         super.init()
     }

@@ -16,7 +16,7 @@ public protocol LiveDesignRepresentativeClaimedSessionSocketDelegate : class {
     
     @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didSetSketchWith sketchID: String, galleryID: String)
     
-    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didRequestRefreshForSession session: Session)
+    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didRequestRefreshForSession session: LiveDesignSession)
     
     @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
     
@@ -35,7 +35,7 @@ public protocol LiveDesignRepresentativeClaimedSessionSocketDelegate : class {
     /**
      Session that is currently handled by socket.
      */
-    var session: Session { get }
+    var session: LiveDesignSession { get }
     
     /**
      Called when the rep pressed “AddToCart” button in the uiu
@@ -65,10 +65,10 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     
     let socket: SocketIOClient
     let rtcClient: WebRTCClient
-    var session: Session
+    var session: LiveDesignSession
     let onClose: ((LiveDesignRepresentativeClaimedSessionSocketManager)->())?   // remove if singelton removed
     
-    required init(socket: SocketIOClient, rtcClient: WebRTCClient, session: Session, onClose: ((LiveDesignRepresentativeClaimedSessionSocketManager)->())? = nil) {
+    required init(socket: SocketIOClient, rtcClient: WebRTCClient, session: LiveDesignSession, onClose: ((LiveDesignRepresentativeClaimedSessionSocketManager)->())? = nil) {
         self.socket = socket
         self.rtcClient = rtcClient
         self.session = session
@@ -105,13 +105,13 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     
     private func registerCallbacks() {
         socket.on("session.refresh") { [weak self] data, ack in
-            if let session = Session(payload: data) {
+            if let session = LiveDesignSession(payload: data) {
                 self?.onRefresh(with: session)
             }
         }
         
         socket.on("session.setSketch") { [weak self] data, ack in
-            if let session = Session(payload: data), let payload = data[0] as? [String : Any] {
+            if let session = LiveDesignSession(payload: data), let payload = data[0] as? [String : Any] {
                 self?.onSetSketch(with: session, payload: payload)
             }
         }
@@ -125,12 +125,12 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
         }
     }
     
-    private func onRefresh(with session: Session) {
+    private func onRefresh(with session: LiveDesignSession) {
         self.session = session
         delegate?.liveDesignRepresentativeClaimedSocket?(self, didRequestRefreshForSession: self.session)
     }
     
-    private func onSetSketch(with session: Session, payload: [String : Any]) {
+    private func onSetSketch(with session: LiveDesignSession, payload: [String : Any]) {
         self.session = session
         
         let sketchID = payload["SketchId"] as! String

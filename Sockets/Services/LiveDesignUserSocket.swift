@@ -18,7 +18,7 @@ public protocol LiveDesignUserSocketDelegate: class {
 
     @objc optional func liveDesignUserSocketDidRequestRefresh(_ socket: LiveDesignUserSocketProtocol)
     
-    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: User)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: LiveDesignUser)
     
     @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
     
@@ -38,12 +38,12 @@ public protocol LiveDesignUserSocketProtocol {
     /**
      Session that is currently handled by socket.
      */
-    var session: Session? { get }
+    var session: LiveDesignSession? { get }
     
     /**
      Register the user to the livedesign queue.
      */
-    func register(with user: User, completion: @escaping (Session?)->())
+    func register(with user: LiveDesignUser, completion: @escaping (LiveDesignSession?)->())
     
     /**
      Call when the user app makes the first setSketch and receives sketchId.
@@ -72,7 +72,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     weak var delegate: LiveDesignUserSocketDelegate?
 
     let socket: SocketIOClient
-    var session: Session?
+    var session: LiveDesignSession?
     var rtcClient: WebRTCClient?
     let onClose: ((LiveDesignUserSocketProtocol)->())?  // remove if singelton removed
 
@@ -87,7 +87,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     // Mark: SocketManagerProtocol
     
-    func register(with user: User, completion: @escaping (Session?)->()) {
+    func register(with user: LiveDesignUser, completion: @escaping (LiveDesignSession?)->()) {
         
         if socket.status == .disconnected {
             socket.connect()
@@ -96,7 +96,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
         socket.emitWithAck("session.register", user.dictionary()).timingOut(after: 5) { [weak self] payload in
 
             if let contents = payload[0] as? [String : Any] {
-                self?.session = Session(payload: contents)
+                self?.session = LiveDesignSession(payload: contents)
                 self?.rtcClient?.start(withIdentifier: self?.session?.userClientID)
                 
                 completion(self?.session)
@@ -140,7 +140,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     private func registerCallbacks() {
         socket.on("session.claimed") { [weak self] data, ack in
-            if let session = Session(payload: data) {
+            if let session = LiveDesignSession(payload: data) {
                 self?.onClaim(with: session)
             }
         }
@@ -154,7 +154,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
         }
         
         socket.on("session.refresh") { [weak self] data, ack in
-            if let session = Session(payload: data) {
+            if let session = LiveDesignSession(payload: data) {
                 self?.onRefresh(with: session)
             }
         }
@@ -165,7 +165,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
             
     }
     
-    private func onClaim(with session: Session) {
+    private func onClaim(with session: LiveDesignSession) {
         self.session = session
         delegate?.liveDesignUserSocket?(self, wasClaimedByRepresentative: session.representative!)
     }
@@ -174,7 +174,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
         delegate?.liveDesignUserSocketDidRequestAddAllToCart?(self)
     }
     
-    private func onRefresh(with session: Session) {
+    private func onRefresh(with session: LiveDesignSession) {
         self.session = session
         delegate?.liveDesignUserSocketDidRequestRefresh?(self)
     }
