@@ -8,7 +8,12 @@
 
 import Foundation
 
-@objc public protocol Call {
+@objc public protocol LiveDesignCall {
+    
+    /**
+     UUID of call.
+     */
+    var uuid: UUID { get }
     
     /**
      Whether the call is muted or not.
@@ -17,10 +22,12 @@ import Foundation
     
 }
 
-internal class LiveDesignCall: NSObject, Call {
+internal class LiveDesignPeerCall: NSObject, LiveDesignCall {
     
     private let peer: Peer?
-        
+    
+    let uuid = UUID()
+    
     var muted: Bool = false {
         didSet {
             if muted != oldValue {
@@ -39,7 +46,7 @@ internal class LiveDesignCall: NSObject, Call {
     }
     
     override func isEqual(_ object: Any?) -> Bool {
-        if let object = object as? LiveDesignCall {
+        if let object = object as? LiveDesignPeerCall {
             return object.peer == self.peer
         }
         return false

@@ -24,9 +24,9 @@ public protocol LiveDesignUserSocketDelegate: class {
     
     // MARK: VOIP
     
-    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, didReceiveCall call: Call)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, didReceiveCall call: LiveDesignCall)
     
-    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, didDisconnectCall call: Call)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, didDisconnectCall call: LiveDesignCall)
     
 }
 
@@ -58,7 +58,7 @@ public protocol LiveDesignUserSocketProtocol {
     /**
      Make a VOIP call to the representative.
      */
-    func makeCall(completion: @escaping (Call?)->())
+    func makeCall(completion: @escaping (LiveDesignCall?)->())
     
     /**
      Hangup.
@@ -123,10 +123,10 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
         }
     }
     
-    func makeCall(completion: @escaping (Call?)->()) {
+    func makeCall(completion: @escaping (LiveDesignCall?)->()) {
         guard let session = self.session else { return }
         self.rtcClient?.makeCall(withIdentifier: session.repClientID, completion: { (peer) in
-            completion(peer != nil ? LiveDesignCall(peer: peer!) : nil)
+            completion(peer != nil ? LiveDesignPeerCall(peer: peer!) : nil)
         })
     }
     
@@ -198,11 +198,16 @@ extension LiveDesignUserSocketManager : WebRTCClientDelegate {
     }
     
     func webRTCClient(_ client: WebRTCClient!, didRecieveIncomingCallFrom peer: Peer!) {
-        delegate?.liveDesignUserSocket?(self, didReceiveCall: LiveDesignCall(peer: peer))
+        strongMainAsync(weak: self) { (strongSelf) in
+            strongSelf.delegate?.liveDesignUserSocket?(strongSelf, didReceiveCall: LiveDesignPeerCall(peer: peer))
+            
+        }
     }
     
     func webRTCClient(_ client: WebRTCClient!, didDropIncomingCallFrom peer: Peer!) {
-        delegate?.liveDesignUserSocket?(self, didDisconnectCall: LiveDesignCall(peer: peer))
+        strongMainAsync(weak: self) { (strongSelf) in
+            strongSelf.delegate?.liveDesignUserSocket?(strongSelf, didDisconnectCall: LiveDesignPeerCall(peer: peer))
+        }
     }
 
 }

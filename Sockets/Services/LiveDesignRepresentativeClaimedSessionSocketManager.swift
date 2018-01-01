@@ -22,9 +22,9 @@ public protocol LiveDesignRepresentativeClaimedSessionSocketDelegate : class {
     
     // MARK: VOIP
     
-    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didReceiveCall call: Call)
+    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didReceiveCall call: LiveDesignCall)
     
-    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didDisconnectCall call: Call)
+    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didDisconnectCall call: LiveDesignCall)
     
 }
 
@@ -45,7 +45,7 @@ public protocol LiveDesignRepresentativeClaimedSessionSocketDelegate : class {
     /**
      Make a VOIP call to the user.
      */
-    func makeCall(completion: @escaping (Call?)->())
+    func makeCall(completion: @escaping (LiveDesignCall?)->())
 
     /**
      Should be called when the rep saves the sketch.
@@ -87,9 +87,9 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
         socket.emit("session.invokeAddAllToCart", session.dictionary());
     }
     
-    func makeCall(completion: @escaping (Call?)->()) {
+    func makeCall(completion: @escaping (LiveDesignCall?)->()) {
         rtcClient.makeCall(withIdentifier: session.userClientID) { (peer) in
-            completion(peer != nil ? LiveDesignCall(peer: peer!) : nil)
+            completion(peer != nil ? LiveDesignPeerCall(peer: peer!) : nil)
         }
     }
     
@@ -158,11 +158,15 @@ extension LiveDesignRepresentativeClaimedSessionSocketManager : WebRTCClientDele
     }
     
     func webRTCClient(_ client: WebRTCClient!, didRecieveIncomingCallFrom peer: Peer!) {
-        delegate?.liveDesignRepresentativeClaimedSocket?(self, didReceiveCall: LiveDesignCall(peer: peer))
+        strongMainAsync(weak: self) { (strongSelf) in
+            strongSelf.delegate?.liveDesignRepresentativeClaimedSocket?(strongSelf, didReceiveCall: LiveDesignPeerCall(peer: peer))
+        }
     }
     
     func webRTCClient(_ client: WebRTCClient!, didDropIncomingCallFrom peer: Peer!) {
-        delegate?.liveDesignRepresentativeClaimedSocket?(self, didDisconnectCall: LiveDesignCall(peer: peer))
+        strongMainAsync(weak: self) { (strongSelf) in
+            strongSelf.delegate?.liveDesignRepresentativeClaimedSocket?(strongSelf, didDisconnectCall: LiveDesignPeerCall(peer: peer))
+        }
     }
-
+    
 }

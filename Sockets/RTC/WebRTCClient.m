@@ -159,15 +159,15 @@ static NSString *const kARDDefaultSTUNServerUrl =
 
 #pragma mark - enable/disable speaker
 
-- (void)enableSpeaker {
-    [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
-//    self.isSpeakerEnabled = YES;
-}
-
-- (void)disableSpeaker {
-    [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
-//    self.isSpeakerEnabled = NO;
-}
+//- (void)enableSpeaker {
+//    [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+////    self.isSpeakerEnabled = YES;
+//}
+//
+//- (void)disableSpeaker {
+//    [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
+////    self.isSpeakerEnabled = NO;
+//}
 
 -(Peer *)addPeer:(NSString *)ID {
     

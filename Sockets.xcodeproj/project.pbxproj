@@ -23,6 +23,7 @@
 		94530CF21FEA8F840091E391 /* SocketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94530CE61FEA8F840091E391 /* SocketService.swift */; };
 		94530CF31FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94530CE71FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift */; };
 		948DA05E1FF251F300188287 /* LiveDesignCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948DA05D1FF251F300188287 /* LiveDesignCall.swift */; };
+		94B9A9771FFA4C8000A5F832 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B9A9761FFA4C8000A5F832 /* Utility.swift */; };
 		BE9809720FC604B7821D16AD /* Pods_Sockets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EE4C3CB3B5702C7BE3E4BB9 /* Pods_Sockets.framework */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +48,7 @@
 		94530CE71FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveDesignRepresentativeSocketManager.swift; sourceTree = "<group>"; };
 		948DA05D1FF251F300188287 /* LiveDesignCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveDesignCall.swift; sourceTree = "<group>"; };
 		948DA05F1FF2746200188287 /* Peer+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Peer+Private.h"; sourceTree = "<group>"; };
+		94B9A9761FFA4C8000A5F832 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		EFCFE83C313646BE9A103997 /* Pods-Sockets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sockets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sockets/Pods-Sockets.debug.xcconfig"; sourceTree = "<group>"; };
 		F731731242DB19D4897A6454 /* Pods-Sockets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sockets.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sockets/Pods-Sockets.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -106,6 +108,7 @@
 			children = (
 				94530CDA1FEA8F840091E391 /* LiveDesignSession.swift */,
 				941C1AFB1FF28AFC00B8E28D /* LiveDesignUser.swift */,
+				948DA05D1FF251F300188287 /* LiveDesignCall.swift */,
 				941C1AFD1FF2966700B8E28D /* Dictionary+Extensions.swift */,
 			);
 			path = Entities;
@@ -129,8 +132,8 @@
 		94530CE31FEA8F840091E391 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				94B9A9761FFA4C8000A5F832 /* Utility.swift */,
 				94530CE61FEA8F840091E391 /* SocketService.swift */,
-				948DA05D1FF251F300188287 /* LiveDesignCall.swift */,
 				94530CE41FEA8F840091E391 /* LiveDesignUserSocket.swift */,
 				94530CE71FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift */,
 				94530CE51FEA8F840091E391 /* LiveDesignRepresentativeClaimedSessionSocketManager.swift */,
@@ -276,6 +279,7 @@
 				94530CF01FEA8F840091E391 /* LiveDesignUserSocket.swift in Sources */,
 				94530CF31FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift in Sources */,
 				94530CF11FEA8F840091E391 /* LiveDesignRepresentativeClaimedSessionSocketManager.swift in Sources */,
+				94B9A9771FFA4C8000A5F832 /* Utility.swift in Sources */,
 				941C1AFC1FF28AFC00B8E28D /* LiveDesignUser.swift in Sources */,
 				94530CEC1FEA8F840091E391 /* Peer.m in Sources */,
 				941C1AFE1FF2966700B8E28D /* Dictionary+Extensions.swift in Sources */,
@@ -433,6 +437,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
 				INFOPLIST_FILE = Sockets/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -441,6 +446,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
