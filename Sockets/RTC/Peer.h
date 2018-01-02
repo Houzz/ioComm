@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 
 @interface Peer : NSObject
+@property (nonatomic, strong, readonly) NSUUID *uuid;
+
+- (void)disconnect;
+
 - (void)muteAudioIn;
 - (void)unmuteAudioIn;
 @end

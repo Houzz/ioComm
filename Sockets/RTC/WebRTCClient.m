@@ -71,10 +71,14 @@ static NSString *const kARDDefaultSTUNServerUrl =
 
 -(void)disconnect {
     [self.peers enumerateKeysAndObjectsUsingBlock:^(NSString*  _Nonnull key, Peer*  _Nonnull obj, BOOL * _Nonnull stop) {
-        [obj.pc close];
-        [self.delegate webRTCClient:self didDropIncomingCallFromPeer:obj];
+        [self disconnectPeer:obj];
     }];
     self.peers = [NSMutableDictionary dictionary];
+}
+
+-(void)disconnectPeer:(Peer *)peer {
+    [peer.pc close];
+    [self.delegate webRTCClient:self didDropIncomingCallFromPeer:peer];
 }
 
 -(void)notifyError:(NSError *)error {

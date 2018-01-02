@@ -108,11 +108,10 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     }
     
     func setSketch(sketchID: String, galleryID: String) {
-        if var dictionary = self.session?.dictionary() {
-            
-            dictionary["SketchId"] = sketchID
-            dictionary["GalleryId"] = galleryID
-            
+        self.session?.sketchID = sketchID
+        self.session?.galleryID = galleryID
+        
+        if let dictionary = self.session?.dictionary() {
             socket.emit("session.setSketch", dictionary);
         }
     }
@@ -133,6 +132,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     func close() {
         if let session = self.session {
             socket.emit("session.close", session.dictionary())
+            onClose(reason: .request)
         }
     }
     
@@ -180,9 +180,11 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     }
     
     private func onClose(reason: SocketServiceReason) {
-        self.rtcClient?.disconnect()
-        self.onClose?(self)
-        delegate?.liveDesignUserSocket?(self, wasClosedDueTo: reason)
+        DispatchQueue.main.async {
+            self.rtcClient?.disconnect()
+            self.onClose?(self)
+            self.delegate?.liveDesignUserSocket?(self, wasClosedDueTo: reason)
+        }
     }
 
 }
@@ -198,15 +200,14 @@ extension LiveDesignUserSocketManager : WebRTCClientDelegate {
     }
     
     func webRTCClient(_ client: WebRTCClient!, didRecieveIncomingCallFrom peer: Peer!) {
-        strongMainAsync(weak: self) { (strongSelf) in
-            strongSelf.delegate?.liveDesignUserSocket?(strongSelf, didReceiveCall: LiveDesignPeerCall(peer: peer))
-            
+        DispatchQueue.main.async {
+            self.delegate?.liveDesignUserSocket?(self, didReceiveCall: LiveDesignPeerCall(peer: peer))
         }
     }
     
     func webRTCClient(_ client: WebRTCClient!, didDropIncomingCallFrom peer: Peer!) {
-        strongMainAsync(weak: self) { (strongSelf) in
-            strongSelf.delegate?.liveDesignUserSocket?(strongSelf, didDisconnectCall: LiveDesignPeerCall(peer: peer))
+        DispatchQueue.main.async {
+            self.delegate?.liveDesignUserSocket?(self, didDisconnectCall: LiveDesignPeerCall(peer: peer))
         }
     }
 

@@ -99,6 +99,7 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     
     func close() {
         socket.emit("session.close", session.dictionary());
+        onClose(reason: .request)
     }
     
     // Mark: Private
@@ -140,9 +141,11 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     }
     
     private func onClose(reason: SocketServiceReason) {
-        rtcClient.disconnect()
-        self.onClose?(self)
-        delegate?.liveDesignRepresentativeClaimedSocket?(self, wasClosedDueTo: reason)
+        DispatchQueue.main.async {
+            self.rtcClient.disconnect()
+            self.onClose?(self)
+            self.delegate?.liveDesignRepresentativeClaimedSocket?(self, wasClosedDueTo: reason)
+        }
     }
     
 }
@@ -158,14 +161,14 @@ extension LiveDesignRepresentativeClaimedSessionSocketManager : WebRTCClientDele
     }
     
     func webRTCClient(_ client: WebRTCClient!, didRecieveIncomingCallFrom peer: Peer!) {
-        strongMainAsync(weak: self) { (strongSelf) in
-            strongSelf.delegate?.liveDesignRepresentativeClaimedSocket?(strongSelf, didReceiveCall: LiveDesignPeerCall(peer: peer))
+        DispatchQueue.main.async {
+            self.delegate?.liveDesignRepresentativeClaimedSocket?(self, didReceiveCall: LiveDesignPeerCall(peer: peer))
         }
     }
     
     func webRTCClient(_ client: WebRTCClient!, didDropIncomingCallFrom peer: Peer!) {
-        strongMainAsync(weak: self) { (strongSelf) in
-            strongSelf.delegate?.liveDesignRepresentativeClaimedSocket?(strongSelf, didDisconnectCall: LiveDesignPeerCall(peer: peer))
+        DispatchQueue.main.async {
+            self.delegate?.liveDesignRepresentativeClaimedSocket?(self, didDisconnectCall: LiveDesignPeerCall(peer: peer))
         }
     }
     

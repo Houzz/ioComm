@@ -54,6 +54,8 @@ static NSUInteger const MAX_PEER = 2;
 - (void)notifyError:(NSError*)error;
 - (void)notifyRemoteStream:(RTCMediaStream*)stream;
 
+- (void)disconnectPeer:(Peer*)peer;
+
 -(Peer *)addPeer:(NSString *)ID;
 -(void)removePeer:(NSString *)ID;
 

@@ -24,6 +24,7 @@ static NSInteger kARDAppClientErrorCreateSDP = -3;
     
     if(self = [super init]){
         
+        self.uuid = [NSUUID UUID];
         self.webRTCClient = webRTCClient;
         
         self.pc = [webRTCClient.factory peerConnectionWithICEServers:webRTCClient.iceServers constraints:[self defaultPeerConnectionConstraints] delegate:self];
@@ -42,6 +43,9 @@ static NSInteger kARDAppClientErrorCreateSDP = -3;
     return self;
 }
 
+-(void)disconnect {
+    [self.webRTCClient disconnectPeer:self];
+}
 
 // Called when creating a session.
 //method นี้อาจเทียบเท่ากับ onCreateSuccess in android

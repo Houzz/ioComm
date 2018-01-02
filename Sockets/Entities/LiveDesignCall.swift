@@ -20,13 +20,20 @@ import Foundation
      */
     var muted: Bool { get set }
     
+    /**
+     Disconnects call.
+     */
+    func disconnect()
+    
 }
 
 internal class LiveDesignPeerCall: NSObject, LiveDesignCall {
     
     private let peer: Peer?
     
-    let uuid = UUID()
+    var uuid: UUID {
+        get { return peer!.uuid }
+    }
     
     var muted: Bool = false {
         didSet {
@@ -47,8 +54,20 @@ internal class LiveDesignPeerCall: NSObject, LiveDesignCall {
     
     override func isEqual(_ object: Any?) -> Bool {
         if let object = object as? LiveDesignPeerCall {
-            return object.peer == self.peer
+            return object.peer?.uuid == self.peer?.uuid
         }
         return false
+    }
+    
+    static func ==(left: LiveDesignPeerCall, right: LiveDesignPeerCall) -> Bool {
+        return left.isEqual(right)
+    }
+    
+    override var hashValue: Int {
+        return uuid.hashValue
+    }
+    
+    func disconnect() {
+        peer?.disconnect()
     }
 }
