@@ -16,7 +16,6 @@
 @class RTCAudioTrack;
 
 @interface Peer ()  <RTCSessionDescriptionDelegate, RTCPeerConnectionDelegate>
-@property (nonatomic) NSUUID *uuid;
 @property (nonatomic) RTCPeerConnection *pc;
 @property (nonatomic) NSString *ID;
 @property (nonatomic) NSInteger endPoint;

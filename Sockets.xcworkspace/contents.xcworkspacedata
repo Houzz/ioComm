@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../POC/SocketIO/SocketIO POC.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Sockets.xcodeproj">
    </FileRef>
    <FileRef

@@ -50,14 +50,14 @@ internal class LiveDesignRepresentativeSocketManager: LiveDesignRepresentativeSo
     weak var delegate: LiveDesignRepresentativeSocketDelegate?
 
     let socket: SocketIOClient
+    let callService: ConfigurableCallService
     let onClose: ((LiveDesignRepresentativeSocketProtocol)->())?    // remove if singelton removed
 
-    var rtcClient: WebRTCClient?
     var activeSessions = Set<LiveDesignRepresentativeClaimedSessionSocketManager>()
     
-    required init(socket: SocketIOClient, onClose: ((LiveDesignRepresentativeSocketProtocol)->())? = nil) {
+    required init(socket: SocketIOClient, callService: ConfigurableCallService, onClose: ((LiveDesignRepresentativeSocketProtocol)->())? = nil) {
         self.socket = socket
-        self.rtcClient = WebRTCClient(webRTCClient: nil, socket: socket)
+        self.callService = callService
         self.onClose = onClose
         registerCallbacks()
     }
@@ -75,9 +75,9 @@ internal class LiveDesignRepresentativeSocketManager: LiveDesignRepresentativeSo
     func claim(session: LiveDesignSession?, with representative: LiveDesignUser, completion: @escaping (LiveDesignRepresentativeClaimedSessionSocketProtocol?)->()) {
         socket.emitWithAck("session.claim", session?.identifier ?? "<null>", representative.dictionary()).timingOut(after: 10) { [weak self] payload in
             
-            if let contents = payload[0] as? [String : Any], let socket = self?.socket, let rtcClient = self?.rtcClient {
+            if let contents = payload[0] as? [String : Any], let socket = self?.socket, let callService = self?.callService {
                 let session = LiveDesignSession(payload: contents)
-                let claimedSession = LiveDesignRepresentativeClaimedSessionSocketManager(socket: socket, rtcClient: rtcClient, session: session, onClose: { manager in
+                let claimedSession = LiveDesignRepresentativeClaimedSessionSocketManager(socket: socket, callService: callService, session: session, onClose: { manager in
                     self?.activeSessions.remove(manager)
                 })
                 self?.activeSessions.insert(claimedSession)

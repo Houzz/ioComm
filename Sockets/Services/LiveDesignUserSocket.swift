@@ -12,8 +12,6 @@ import SocketIO
 @objc
 public protocol LiveDesignUserSocketDelegate: class {
 
-    // MARK: Sketch
-
     @objc optional func liveDesignUserSocketDidRequestAddAllToCart(_ socket: LiveDesignUserSocketProtocol)
 
     @objc optional func liveDesignUserSocketDidRequestRefresh(_ socket: LiveDesignUserSocketProtocol)
@@ -21,12 +19,6 @@ public protocol LiveDesignUserSocketDelegate: class {
     @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: LiveDesignUser)
     
     @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
-    
-    // MARK: VOIP
-    
-    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, didReceiveCall call: LiveDesignCall)
-    
-    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, didDisconnectCall call: LiveDesignCall)
     
 }
 
@@ -56,11 +48,6 @@ public protocol LiveDesignUserSocketProtocol {
     func refresh()
     
     /**
-     Make a VOIP call to the representative.
-     */
-    func makeCall(completion: @escaping (LiveDesignCall?)->())
-    
-    /**
      Hangup.
      */
     func close()
@@ -72,15 +59,15 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     weak var delegate: LiveDesignUserSocketDelegate?
 
     let socket: SocketIOClient
+    let callService: ConfigurableCallService
     var session: LiveDesignSession?
-    var rtcClient: WebRTCClient?
     let onClose: ((LiveDesignUserSocketProtocol)->())?  // remove if singelton removed
 
-    required init(socket: SocketIOClient, onClose: ((LiveDesignUserSocketProtocol)->())? = nil) {
+    required init(socket: SocketIOClient, callService: ConfigurableCallService, onClose: ((LiveDesignUserSocketProtocol)->())? = nil) {
         self.socket = socket
+        self.callService = callService
         self.onClose = onClose
         super.init()
-        self.rtcClient = WebRTCClient(webRTCClient: self, socket: socket)
 
         registerCallbacks()
     }
@@ -97,7 +84,10 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
 
             if let contents = payload[0] as? [String : Any] {
                 self?.session = LiveDesignSession(payload: contents)
-                self?.rtcClient?.start(withIdentifier: self?.session?.userClientID)
+                
+                if let userClientID = self?.session?.userClientID {
+                    self?.callService.start(withIdentifier: userClientID)
+                }
                 
                 completion(self?.session)
             } else {
@@ -121,14 +111,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
             socket.emit("session.refresh", dictionary)
         }
     }
-    
-    func makeCall(completion: @escaping (LiveDesignCall?)->()) {
-        guard let session = self.session else { return }
-        self.rtcClient?.makeCall(withIdentifier: session.repClientID, completion: { (peer) in
-            completion(peer != nil ? LiveDesignPeerCall(peer: peer!) : nil)
-        })
-    }
-    
+
     func close() {
         if let session = self.session {
             socket.emit("session.close", session.dictionary())
@@ -140,7 +123,8 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     private func registerCallbacks() {
         socket.on("session.claimed") { [weak self] data, ack in
-            if let session = LiveDesignSession(payload: data) {
+            if let session = LiveDesignSession(payload: data), let representative = session.representative, let repID = session.repClientID {
+                self?.callService.associate(identifier: repID, withUser: representative)
                 self?.onClaim(with: session)
             }
         }
@@ -181,33 +165,9 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     private func onClose(reason: SocketServiceReason) {
         DispatchQueue.main.async {
-            self.rtcClient?.disconnect()
+            self.callService.disconnect()
             self.onClose?(self)
             self.delegate?.liveDesignUserSocket?(self, wasClosedDueTo: reason)
-        }
-    }
-
-}
-
-extension LiveDesignUserSocketManager : WebRTCClientDelegate {
-    
-    func onStatusChanged(_ newStatus: WebRTCClientState) {
-
-    }
-
-    func webRTCClient(_ client: WebRTCClient!, didReceiveError error: Error!) {
-        
-    }
-    
-    func webRTCClient(_ client: WebRTCClient!, didRecieveIncomingCallFrom peer: Peer!) {
-        DispatchQueue.main.async {
-            self.delegate?.liveDesignUserSocket?(self, didReceiveCall: LiveDesignPeerCall(peer: peer))
-        }
-    }
-    
-    func webRTCClient(_ client: WebRTCClient!, didDropIncomingCallFrom peer: Peer!) {
-        DispatchQueue.main.async {
-            self.delegate?.liveDesignUserSocket?(self, didDisconnectCall: LiveDesignPeerCall(peer: peer))
         }
     }
 

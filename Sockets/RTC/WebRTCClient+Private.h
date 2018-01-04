@@ -37,7 +37,6 @@ static NSUInteger const MAX_PEER = 2;
 @property (nonatomic) NSMutableDictionary<NSString*, Peer*> *peers;
 @property (nonatomic) RTCPeerConnectionFactory *factory;
 @property (nonatomic) RTCMediaStream *localMS;
-@property (nonatomic) NSString *currentPeerConnectionID;
 @property (nonatomic) NSMutableArray *allKeyInPeers;
 @property (nonatomic) NSMutableArray *iceServers;
 @property (nonatomic, strong) NSString* callIdentifier;

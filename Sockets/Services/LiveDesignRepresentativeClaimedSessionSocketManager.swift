@@ -20,12 +20,6 @@ public protocol LiveDesignRepresentativeClaimedSessionSocketDelegate : class {
     
     @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
     
-    // MARK: VOIP
-    
-    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didReceiveCall call: LiveDesignCall)
-    
-    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didDisconnectCall call: LiveDesignCall)
-    
 }
 
 @objc public protocol LiveDesignRepresentativeClaimedSessionSocketProtocol {
@@ -41,11 +35,6 @@ public protocol LiveDesignRepresentativeClaimedSessionSocketDelegate : class {
      Called when the rep pressed “AddToCart” button in the uiu
      */
     func invokeAddToCart()
-    
-    /**
-     Make a VOIP call to the user.
-     */
-    func makeCall(completion: @escaping (LiveDesignCall?)->())
 
     /**
      Should be called when the rep saves the sketch.
@@ -64,19 +53,21 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     weak var delegate: LiveDesignRepresentativeClaimedSessionSocketDelegate?
     
     let socket: SocketIOClient
-    let rtcClient: WebRTCClient
+    let callService: ConfigurableCallService
     var session: LiveDesignSession
     let onClose: ((LiveDesignRepresentativeClaimedSessionSocketManager)->())?   // remove if singelton removed
     
-    required init(socket: SocketIOClient, rtcClient: WebRTCClient, session: LiveDesignSession, onClose: ((LiveDesignRepresentativeClaimedSessionSocketManager)->())? = nil) {
+    required init(socket: SocketIOClient, callService: ConfigurableCallService, session: LiveDesignSession, onClose: ((LiveDesignRepresentativeClaimedSessionSocketManager)->())? = nil) {
         self.socket = socket
-        self.rtcClient = rtcClient
+        self.callService = callService
         self.session = session
         self.onClose = onClose
         super.init()
         
-        rtcClient.delegate = self;
-        rtcClient.start(withIdentifier: session.repClientID)
+        if let repClientID = session.repClientID, let user = session.user, let userID = session.userClientID {
+            callService.start(withIdentifier: repClientID)
+            callService.associate(identifier: userID, withUser: user)
+        }
         
         registerCallbacks()
     }
@@ -85,12 +76,6 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     
     func invokeAddToCart() {
         socket.emit("session.invokeAddAllToCart", session.dictionary());
-    }
-    
-    func makeCall(completion: @escaping (LiveDesignCall?)->()) {
-        rtcClient.makeCall(withIdentifier: session.userClientID) { (peer) in
-            completion(peer != nil ? LiveDesignPeerCall(peer: peer!) : nil)
-        }
     }
     
     func refresh() {
@@ -142,33 +127,9 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     
     private func onClose(reason: SocketServiceReason) {
         DispatchQueue.main.async {
-            self.rtcClient.disconnect()
+            self.callService.disconnect()
             self.onClose?(self)
             self.delegate?.liveDesignRepresentativeClaimedSocket?(self, wasClosedDueTo: reason)
-        }
-    }
-    
-}
-
-extension LiveDesignRepresentativeClaimedSessionSocketManager : WebRTCClientDelegate {
-    
-    func onStatusChanged(_ newStatus: WebRTCClientState) {
-
-    }
-    
-    func webRTCClient(_ client: WebRTCClient!, didReceiveError error: Error!) {
-        
-    }
-    
-    func webRTCClient(_ client: WebRTCClient!, didRecieveIncomingCallFrom peer: Peer!) {
-        DispatchQueue.main.async {
-            self.delegate?.liveDesignRepresentativeClaimedSocket?(self, didReceiveCall: LiveDesignPeerCall(peer: peer))
-        }
-    }
-    
-    func webRTCClient(_ client: WebRTCClient!, didDropIncomingCallFrom peer: Peer!) {
-        DispatchQueue.main.async {
-            self.delegate?.liveDesignRepresentativeClaimedSocket?(self, didDisconnectCall: LiveDesignPeerCall(peer: peer))
         }
     }
     

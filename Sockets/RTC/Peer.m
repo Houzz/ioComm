@@ -24,7 +24,6 @@ static NSInteger kARDAppClientErrorCreateSDP = -3;
     
     if(self = [super init]){
         
-        self.uuid = [NSUUID UUID];
         self.webRTCClient = webRTCClient;
         
         self.pc = [webRTCClient.factory peerConnectionWithICEServers:webRTCClient.iceServers constraints:[self defaultPeerConnectionConstraints] delegate:self];
@@ -205,7 +204,16 @@ didSetSessionDescriptionWithError:(NSError *)error{
     didOpenDataChannel:(RTCDataChannel*)dataChannel{
 }
 
+-(NSString *)identifier {
+    return self.ID;
+}
 
+-(BOOL)isEqual:(id)object {
+    if ([object isKindOfClass:Peer.class]) {
+        return [[(Peer*)object identifier] isEqual:self.identifier];
+    }
+    return NO;
+}
 
 
 #pragma mark - Audio mute/unmute

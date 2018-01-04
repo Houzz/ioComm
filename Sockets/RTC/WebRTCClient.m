@@ -110,11 +110,6 @@ static NSString *const kARDDefaultSTUNServerUrl =
 
 - (RTCMediaStream *)createLocalMediaStream {
     RTCMediaStream *localStream = [_factory mediaStreamWithLabel:@"ARDAMS"];
-    
-//    if (self.delegate) {
-//        [self.delegate onLocalStream:localStream];
-//    }
-    
     [localStream addAudioTrack:[_factory audioTrackWithID:@"ARDAMSa0"]];
     
     return localStream;
@@ -178,10 +173,6 @@ static NSString *const kARDDefaultSTUNServerUrl =
     Peer *peer = [[Peer alloc] initWithWithId:ID endPoint:0 andWebRTCClient:self];
     [self.peers setObject:peer forKey:ID];
     [self.allKeyInPeers addObject:ID];
-    
-    NSLog(@"add new peer -> peers array: %@", [self.peers description]);
-    
-    self.currentPeerConnectionID = ID;
     
     return peer;
 }
@@ -281,6 +272,10 @@ static NSString *const kARDDefaultSTUNServerUrl =
 
 -(void)socketIOManager:(SocketIOManagerCall*)manager didReceiveIdentifier:(NSString*)identifier {
     self.callIdentifier = identifier;
+    
+    if (self.delegate) {
+        [self.delegate onStatusChanged:kWebRTCClientStateConnected];
+    }
 }
 
 #pragma mark - message handler
