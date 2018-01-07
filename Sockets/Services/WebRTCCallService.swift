@@ -58,7 +58,8 @@ internal class WebRTCCallService: NSObject, ConfigurableCallService {
                 peer?.disconnect()  // nothing to manage the peer
                 return
             }
-            
+
+            peer?.uuid = call.uuid
             call.peer = peer
         })
         

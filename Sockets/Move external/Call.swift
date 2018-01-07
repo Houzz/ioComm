@@ -30,7 +30,7 @@ import Foundation
     /**
      Identifier of call.
      */
-    var identifier: String { get }
+    var uuid: UUID { get }
     
     /**
      Whether the call is muted or not.
