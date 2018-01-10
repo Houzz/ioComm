@@ -150,6 +150,7 @@ extension WebRTCCallService : WebRTCClientDelegate {
         let call = self.call(byPeer: peer)
         remove(call: call)
         call.state = .ended
+        call.peer = nil
         
         if let delegate = self.delegate {
             DispatchQueue.main.async {

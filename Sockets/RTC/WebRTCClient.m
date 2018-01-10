@@ -111,7 +111,7 @@ static NSString *const kARDDefaultSTUNServerUrl =
 - (RTCMediaStream *)createLocalMediaStream {
     RTCMediaStream *localStream = [_factory mediaStreamWithLabel:@"ARDAMS"];
     [localStream addAudioTrack:[_factory audioTrackWithID:@"ARDAMSa0"]];
-    
+        
     return localStream;
 }
 
@@ -354,29 +354,6 @@ static NSString *const kARDDefaultSTUNServerUrl =
         [pc addICECandidate:candidate];
         
     }
-}
-
-#pragma mark - Audio mute/unmute
-- (void)muteAllAudioIn {
-    NSLog(@"all keys in peers: %@", [self.peers allKeys].description);
-    
-    for(NSString *ID in self.allKeyInPeers) {
-        Peer *peer = [self.peers objectForKey:ID];
-        [peer muteAudioIn];
-    }
-    
-    
-}
-
-- (void)unmuteAllAudioIn {
-    
-    NSLog(@"all keys in peers: %@", [self.peers allKeys].description);
-    
-    for(NSString *ID in self.allKeyInPeers) {
-        Peer *peer = [self.peers objectForKey:ID];
-        [peer unmuteAudioIn];
-    }
-
 }
 
 #pragma mark - Defaults

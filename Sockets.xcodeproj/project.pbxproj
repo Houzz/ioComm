@@ -122,6 +122,7 @@
 		94530CD91FEA8F840091E391 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
+				941C1AFB1FF28AFC00B8E28D /* LiveDesignUser.swift */,
 				94530CDA1FEA8F840091E391 /* LiveDesignSession.swift */,
 				941C1AFD1FF2966700B8E28D /* Dictionary+Extensions.swift */,
 			);
@@ -131,15 +132,16 @@
 		94530CDB1FEA8F840091E391 /* RTC */ = {
 			isa = PBXGroup;
 			children = (
-				941C1AFB1FF28AFC00B8E28D /* LiveDesignUser.swift */,
 				94530CDC1FEA8F840091E391 /* Peer.h */,
 				948DA05F1FF2746200188287 /* Peer+Private.h */,
 				94530CDF1FEA8F840091E391 /* Peer.m */,
 				94530CDD1FEA8F840091E391 /* SocketIOManagerCall.h */,
-				94530CDE1FEA8F840091E391 /* WebRTCClient.m */,
-				94530CE01FEA8F840091E391 /* WebRTCClient+Private.h */,
 				94530CE11FEA8F840091E391 /* SocketIOManagerCall.m */,
 				94530CE21FEA8F840091E391 /* WebRTCClient.h */,
+				94530CDE1FEA8F840091E391 /* WebRTCClient.m */,
+				94530CE01FEA8F840091E391 /* WebRTCClient+Private.h */,
+				941509C91FFE2B2A0022B0EC /* WebRTCCallService.swift */,
+				941509CB1FFE2E8D0022B0EC /* WebRTCCall.swift */,
 			);
 			path = RTC;
 			sourceTree = "<group>";
@@ -148,8 +150,6 @@
 			isa = PBXGroup;
 			children = (
 				94B9A9761FFA4C8000A5F832 /* Utility.swift */,
-				941509C91FFE2B2A0022B0EC /* WebRTCCallService.swift */,
-				941509CB1FFE2E8D0022B0EC /* WebRTCCall.swift */,
 				94530CE61FEA8F840091E391 /* SocketService.swift */,
 				94530CE41FEA8F840091E391 /* LiveDesignUserSocket.swift */,
 				94530CE71FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift */,
