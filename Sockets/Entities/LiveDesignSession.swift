@@ -12,8 +12,6 @@ open class LiveDesignSession: NSObject {
     
     public var status: String?      
     public var identifier: String
-    public var userClientID: String?
-    public var repClientID: String?
     public var sketchID: String?
     public var galleryID: String?
     public var user: LiveDesignUser?
@@ -22,8 +20,6 @@ open class LiveDesignSession: NSObject {
     public required init(payload: [String : Any]) {
         status                  = payload["Status"] as! String?
         identifier              = payload["Id"] as! String
-        userClientID            = payload["UserClientId"] as! String?
-        repClientID             = payload["RepClientId"] as! String?
         galleryID               = payload["GalleryId"] as! String?
         sketchID                = payload["SketchId"] as! String?
 
@@ -47,8 +43,6 @@ open class LiveDesignSession: NSObject {
         
         dictionary.safe(set: identifier, for: "Id")
         dictionary.safe(set: status, for: "Status")
-        dictionary.safe(set: userClientID, for: "UserClientId")
-        dictionary.safe(set: repClientID, for: "RepClientId")
         dictionary.safe(set: galleryID, for: "GalleryId")
         dictionary.safe(set: sketchID, for: "SketchId")
         

@@ -59,13 +59,11 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     weak var delegate: LiveDesignUserSocketDelegate?
 
     let socket: SocketIOClient
-    let callService: ConfigurableCallService
     var session: LiveDesignSession?
     let onClose: ((LiveDesignUserSocketProtocol)->())?  // remove if singelton removed
 
-    required init(socket: SocketIOClient, callService: ConfigurableCallService, onClose: ((LiveDesignUserSocketProtocol)->())? = nil) {
+    required init(socket: SocketIOClient, onClose: ((LiveDesignUserSocketProtocol)->())? = nil) {
         self.socket = socket
-        self.callService = callService
         self.onClose = onClose
         super.init()
 
@@ -83,12 +81,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
         socket.emitWithAck("session.register", user.dictionary()).timingOut(after: 5) { [weak self] payload in
 
             if let contents = payload[0] as? [String : Any] {
-                self?.session = LiveDesignSession(payload: contents)
-                
-                if let userClientID = self?.session?.userClientID {
-                    self?.callService.start(withIdentifier: userClientID)
-                }
-                
+                self?.session = LiveDesignSession(payload: contents)                
                 completion(self?.session)
             } else {
                 completion(nil)
@@ -123,8 +116,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     private func registerCallbacks() {
         socket.on("session.claimed") { [weak self] data, ack in
-            if let session = LiveDesignSession(payload: data), let representative = session.representative, let repID = session.repClientID {
-                self?.callService.associate(identifier: repID, withUser: representative)
+            if let session = LiveDesignSession(payload: data) {
                 self?.onClaim(with: session)
             }
         }
@@ -165,7 +157,6 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     private func onClose(reason: SocketServiceReason) {
         DispatchQueue.main.async {
-            self.callService.disconnect()
             self.onClose?(self)
             self.delegate?.liveDesignUserSocket?(self, wasClosedDueTo: reason)
         }

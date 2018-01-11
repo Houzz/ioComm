@@ -44,17 +44,6 @@ public final class SocketService: NSObject {
      */
     static public let shared = SocketService(url: URL(string: "https://glacial-temple-59524.herokuapp.com/")!)
     
-    /**
-     Call service that is associated with sockets.
-     */
-    private(set) public lazy var callService: CallService = {
-        return self.configurableCallService
-    }()
-    
-    internal lazy var configurableCallService: ConfigurableCallService = {
-        return WebRTCCallService(socketService: self)
-    }()
-    
     public var timeout: TimeInterval = 2.0    
     public var userSocket: LiveDesignUserSocketProtocol?
     public var representativeSocket: LiveDesignRepresentativeSocketProtocol?
@@ -76,7 +65,7 @@ public final class SocketService: NSObject {
         SocketManager.connectedManager(url: url, config:  [.log(true), .reconnects(true)], timeout: self.timeout) { manager in
             if let manager = manager {
                 self.socket = manager.defaultSocket
-                self.userSocket = LiveDesignUserSocketManager(socket: manager.defaultSocket, callService: self.configurableCallService , onClose: { [weak self] socket in
+                self.userSocket = LiveDesignUserSocketManager(socket: manager.defaultSocket, onClose: { [weak self] socket in
                     self?.userSocket = nil
                     self?.socket = nil
                 })
@@ -93,7 +82,7 @@ public final class SocketService: NSObject {
         SocketManager.connectedManager(url: url, config:  [.log(true), .reconnects(true)], timeout: self.timeout) { manager in
             if let manager = manager {
                 self.socket = manager.defaultSocket
-                self.representativeSocket = LiveDesignRepresentativeSocketManager(socket: manager.defaultSocket, callService: self.configurableCallService, onClose: { [weak self] socket in
+                self.representativeSocket = LiveDesignRepresentativeSocketManager(socket: manager.defaultSocket, onClose: { [weak self] socket in
                     self?.representativeSocket = nil
                     self?.socket = nil
                 })
@@ -105,6 +94,7 @@ public final class SocketService: NSObject {
             }
         }
     }
+    
 }
 
 fileprivate extension SocketManager {

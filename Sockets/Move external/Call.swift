@@ -10,9 +10,8 @@ import Foundation
 
 @objc public enum CallState: Int {
     case connecting
-    case active
-    case muted
-    case ended
+    case connected
+    case disconnected
 }
 
 @objc public protocol Call {
@@ -36,6 +35,11 @@ import Foundation
      Whether the call is muted or not.
      */
     var muted: Bool { get set }
+    
+    /**
+    Holding a Call ceases the flow of audio between parties.
+     */
+    var onHold: Bool { get set }
     
     /**
      User who initiated the call.

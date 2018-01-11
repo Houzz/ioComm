@@ -7,54 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		941509CA1FFE2B2A0022B0EC /* WebRTCCallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941509C91FFE2B2A0022B0EC /* WebRTCCallService.swift */; };
-		941509CC1FFE2E8D0022B0EC /* WebRTCCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941509CB1FFE2E8D0022B0EC /* WebRTCCall.swift */; };
 		941C1AFC1FF28AFC00B8E28D /* LiveDesignUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941C1AFB1FF28AFC00B8E28D /* LiveDesignUser.swift */; };
 		941C1AFE1FF2966700B8E28D /* Dictionary+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941C1AFD1FF2966700B8E28D /* Dictionary+Extensions.swift */; };
 		94530CD31FEA8ED50091E391 /* Sockets.h in Headers */ = {isa = PBXBuildFile; fileRef = 94530CD11FEA8ED50091E391 /* Sockets.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		94530CE81FEA8F840091E391 /* LiveDesignSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94530CDA1FEA8F840091E391 /* LiveDesignSession.swift */; };
-		94530CE91FEA8F840091E391 /* Peer.h in Headers */ = {isa = PBXBuildFile; fileRef = 94530CDC1FEA8F840091E391 /* Peer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		94530CEA1FEA8F840091E391 /* SocketIOManagerCall.h in Headers */ = {isa = PBXBuildFile; fileRef = 94530CDD1FEA8F840091E391 /* SocketIOManagerCall.h */; };
-		94530CEB1FEA8F840091E391 /* WebRTCClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 94530CDE1FEA8F840091E391 /* WebRTCClient.m */; };
-		94530CEC1FEA8F840091E391 /* Peer.m in Sources */ = {isa = PBXBuildFile; fileRef = 94530CDF1FEA8F840091E391 /* Peer.m */; };
-		94530CED1FEA8F840091E391 /* WebRTCClient+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 94530CE01FEA8F840091E391 /* WebRTCClient+Private.h */; };
-		94530CEE1FEA8F840091E391 /* SocketIOManagerCall.m in Sources */ = {isa = PBXBuildFile; fileRef = 94530CE11FEA8F840091E391 /* SocketIOManagerCall.m */; };
-		94530CEF1FEA8F840091E391 /* WebRTCClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 94530CE21FEA8F840091E391 /* WebRTCClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		94530CF01FEA8F840091E391 /* LiveDesignUserSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94530CE41FEA8F840091E391 /* LiveDesignUserSocket.swift */; };
 		94530CF11FEA8F840091E391 /* LiveDesignRepresentativeClaimedSessionSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94530CE51FEA8F840091E391 /* LiveDesignRepresentativeClaimedSessionSocketManager.swift */; };
 		94530CF21FEA8F840091E391 /* SocketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94530CE61FEA8F840091E391 /* SocketService.swift */; };
 		94530CF31FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94530CE71FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift */; };
 		946C25921FFD11980075633F /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C25911FFD11980075633F /* CallService.swift */; };
 		948DA05E1FF251F300188287 /* Call.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948DA05D1FF251F300188287 /* Call.swift */; };
-		94B9A9771FFA4C8000A5F832 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B9A9761FFA4C8000A5F832 /* Utility.swift */; };
 		BE9809720FC604B7821D16AD /* Pods_Sockets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EE4C3CB3B5702C7BE3E4BB9 /* Pods_Sockets.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3EE4C3CB3B5702C7BE3E4BB9 /* Pods_Sockets.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sockets.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		941509C91FFE2B2A0022B0EC /* WebRTCCallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCCallService.swift; sourceTree = "<group>"; };
-		941509CB1FFE2E8D0022B0EC /* WebRTCCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCCall.swift; sourceTree = "<group>"; };
 		941C1AFB1FF28AFC00B8E28D /* LiveDesignUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveDesignUser.swift; sourceTree = "<group>"; };
 		941C1AFD1FF2966700B8E28D /* Dictionary+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extensions.swift"; sourceTree = "<group>"; };
 		94530CCE1FEA8ED50091E391 /* Sockets.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sockets.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94530CD11FEA8ED50091E391 /* Sockets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sockets.h; sourceTree = "<group>"; };
 		94530CD21FEA8ED50091E391 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		94530CDA1FEA8F840091E391 /* LiveDesignSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveDesignSession.swift; sourceTree = "<group>"; };
-		94530CDC1FEA8F840091E391 /* Peer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peer.h; sourceTree = "<group>"; };
-		94530CDD1FEA8F840091E391 /* SocketIOManagerCall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOManagerCall.h; sourceTree = "<group>"; };
-		94530CDE1FEA8F840091E391 /* WebRTCClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebRTCClient.m; sourceTree = "<group>"; };
-		94530CDF1FEA8F840091E391 /* Peer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Peer.m; sourceTree = "<group>"; };
-		94530CE01FEA8F840091E391 /* WebRTCClient+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebRTCClient+Private.h"; sourceTree = "<group>"; };
-		94530CE11FEA8F840091E391 /* SocketIOManagerCall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOManagerCall.m; sourceTree = "<group>"; };
-		94530CE21FEA8F840091E391 /* WebRTCClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebRTCClient.h; sourceTree = "<group>"; };
 		94530CE41FEA8F840091E391 /* LiveDesignUserSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveDesignUserSocket.swift; sourceTree = "<group>"; };
 		94530CE51FEA8F840091E391 /* LiveDesignRepresentativeClaimedSessionSocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveDesignRepresentativeClaimedSessionSocketManager.swift; sourceTree = "<group>"; };
 		94530CE61FEA8F840091E391 /* SocketService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketService.swift; sourceTree = "<group>"; };
 		94530CE71FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveDesignRepresentativeSocketManager.swift; sourceTree = "<group>"; };
 		946C25911FFD11980075633F /* CallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		948DA05D1FF251F300188287 /* Call.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Call.swift; sourceTree = "<group>"; };
-		948DA05F1FF2746200188287 /* Peer+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Peer+Private.h"; sourceTree = "<group>"; };
-		94B9A9761FFA4C8000A5F832 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		EFCFE83C313646BE9A103997 /* Pods-Sockets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sockets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sockets/Pods-Sockets.debug.xcconfig"; sourceTree = "<group>"; };
 		F731731242DB19D4897A6454 /* Pods-Sockets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sockets.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sockets/Pods-Sockets.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,7 +90,6 @@
 			children = (
 				941509CD1FFE2EE00022B0EC /* Move external */,
 				94530CD91FEA8F840091E391 /* Entities */,
-				94530CDB1FEA8F840091E391 /* RTC */,
 				94530CE31FEA8F840091E391 /* Services */,
 				94530CD11FEA8ED50091E391 /* Sockets.h */,
 				94530CD21FEA8ED50091E391 /* Info.plist */,
@@ -129,27 +107,9 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
-		94530CDB1FEA8F840091E391 /* RTC */ = {
-			isa = PBXGroup;
-			children = (
-				94530CDC1FEA8F840091E391 /* Peer.h */,
-				948DA05F1FF2746200188287 /* Peer+Private.h */,
-				94530CDF1FEA8F840091E391 /* Peer.m */,
-				94530CDD1FEA8F840091E391 /* SocketIOManagerCall.h */,
-				94530CE11FEA8F840091E391 /* SocketIOManagerCall.m */,
-				94530CE21FEA8F840091E391 /* WebRTCClient.h */,
-				94530CDE1FEA8F840091E391 /* WebRTCClient.m */,
-				94530CE01FEA8F840091E391 /* WebRTCClient+Private.h */,
-				941509C91FFE2B2A0022B0EC /* WebRTCCallService.swift */,
-				941509CB1FFE2E8D0022B0EC /* WebRTCCall.swift */,
-			);
-			path = RTC;
-			sourceTree = "<group>";
-		};
 		94530CE31FEA8F840091E391 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				94B9A9761FFA4C8000A5F832 /* Utility.swift */,
 				94530CE61FEA8F840091E391 /* SocketService.swift */,
 				94530CE41FEA8F840091E391 /* LiveDesignUserSocket.swift */,
 				94530CE71FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift */,
@@ -174,11 +134,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				94530CED1FEA8F840091E391 /* WebRTCClient+Private.h in Headers */,
-				94530CE91FEA8F840091E391 /* Peer.h in Headers */,
 				94530CD31FEA8ED50091E391 /* Sockets.h in Headers */,
-				94530CEF1FEA8F840091E391 /* WebRTCClient.h in Headers */,
-				94530CEA1FEA8F840091E391 /* SocketIOManagerCall.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,18 +246,12 @@
 			files = (
 				94530CF21FEA8F840091E391 /* SocketService.swift in Sources */,
 				948DA05E1FF251F300188287 /* Call.swift in Sources */,
-				94530CEE1FEA8F840091E391 /* SocketIOManagerCall.m in Sources */,
 				94530CE81FEA8F840091E391 /* LiveDesignSession.swift in Sources */,
-				94530CEB1FEA8F840091E391 /* WebRTCClient.m in Sources */,
 				94530CF01FEA8F840091E391 /* LiveDesignUserSocket.swift in Sources */,
 				94530CF31FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift in Sources */,
 				94530CF11FEA8F840091E391 /* LiveDesignRepresentativeClaimedSessionSocketManager.swift in Sources */,
-				94B9A9771FFA4C8000A5F832 /* Utility.swift in Sources */,
 				946C25921FFD11980075633F /* CallService.swift in Sources */,
-				941509CA1FFE2B2A0022B0EC /* WebRTCCallService.swift in Sources */,
-				941509CC1FFE2E8D0022B0EC /* WebRTCCall.swift in Sources */,
 				941C1AFC1FF28AFC00B8E28D /* LiveDesignUser.swift in Sources */,
-				94530CEC1FEA8F840091E391 /* Peer.m in Sources */,
 				941C1AFE1FF2966700B8E28D /* Dictionary+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
