@@ -80,7 +80,7 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
             socket.connect()
             return
         }
-        socket.emitWithAck("session.register", user.dictionary()).timingOut(after: 5) { [weak self] payload in
+        socket.emitWithAck("session.register", user.dictionary(), "").timingOut(after: 10) { [weak self] payload in
 
             if let contents = payload[0] as? [String : Any] {
                 self?.session = LiveDesignSession(payload: contents)
