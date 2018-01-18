@@ -98,13 +98,13 @@ internal class WebRTCCallService: NSObject, ConfigurableCallService {
 
 extension WebRTCCallService {
     
-    fileprivate func call(byPeer peer: Peer) -> WebRTCCall {
+    fileprivate func call(byPeer peer: Peer) -> WebRTCCall? {
         for call in peerCalls {
             if call.peer == peer {
                 return call
             }
         }
-        fatalError()
+        return nil
     }
     
     fileprivate func remove(call: WebRTCCall) {
@@ -141,16 +141,20 @@ extension WebRTCCallService : WebRTCClientDelegate {
         peerCalls.append(WebRTCCall(contact: user(forIdentifier: peer.identifier)!, peer: peer))
         if let delegate = self.delegate {
             DispatchQueue.main.async {
-                delegate.callService?(self, didReceiveCall: self.call(byPeer: peer))
+                delegate.callService?(self, didReceiveCall: self.call(byPeer: peer)!)
             }
         }
     }
     
     func webRTCClient(_ client: WebRTCClient!, didDropIncomingCallFrom peer: Peer!) {
+        
         let call = self.call(byPeer: peer)
-        remove(call: call)
-        call.state = .ended
-        call.peer = nil
+        
+        if let call = call {
+            remove(call: call)
+            call.state = .ended
+            call.peer = nil
+        }
         
         if let delegate = self.delegate {
             DispatchQueue.main.async {

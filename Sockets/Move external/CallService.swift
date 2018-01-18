@@ -22,7 +22,7 @@ public protocol CallServiceDelegate: class {
     
     @objc optional func callService(_ service: CallService, didReceiveCall call: Call)
     
-    @objc optional func callService(_ service: CallService, didDisconnectCall call: Call)
+    @objc optional func callService(_ service: CallService, didDisconnectCall call: Call?)
     
 }
 
