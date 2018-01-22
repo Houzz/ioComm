@@ -26,7 +26,6 @@
 		94530CF31FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94530CE71FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift */; };
 		946C25921FFD11980075633F /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C25911FFD11980075633F /* CallService.swift */; };
 		948DA05E1FF251F300188287 /* Call.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948DA05D1FF251F300188287 /* Call.swift */; };
-		94B9A9771FFA4C8000A5F832 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B9A9761FFA4C8000A5F832 /* Utility.swift */; };
 		BE9809720FC604B7821D16AD /* Pods_Sockets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EE4C3CB3B5702C7BE3E4BB9 /* Pods_Sockets.framework */; };
 /* End PBXBuildFile section */
 
@@ -54,7 +53,6 @@
 		946C25911FFD11980075633F /* CallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		948DA05D1FF251F300188287 /* Call.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Call.swift; sourceTree = "<group>"; };
 		948DA05F1FF2746200188287 /* Peer+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Peer+Private.h"; sourceTree = "<group>"; };
-		94B9A9761FFA4C8000A5F832 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		EFCFE83C313646BE9A103997 /* Pods-Sockets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sockets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sockets/Pods-Sockets.debug.xcconfig"; sourceTree = "<group>"; };
 		F731731242DB19D4897A6454 /* Pods-Sockets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sockets.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sockets/Pods-Sockets.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -149,7 +147,6 @@
 		94530CE31FEA8F840091E391 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				94B9A9761FFA4C8000A5F832 /* Utility.swift */,
 				94530CE61FEA8F840091E391 /* SocketService.swift */,
 				94530CE41FEA8F840091E391 /* LiveDesignUserSocket.swift */,
 				94530CE71FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift */,
@@ -296,7 +293,6 @@
 				94530CF01FEA8F840091E391 /* LiveDesignUserSocket.swift in Sources */,
 				94530CF31FEA8F840091E391 /* LiveDesignRepresentativeSocketManager.swift in Sources */,
 				94530CF11FEA8F840091E391 /* LiveDesignRepresentativeClaimedSessionSocketManager.swift in Sources */,
-				94B9A9771FFA4C8000A5F832 /* Utility.swift in Sources */,
 				946C25921FFD11980075633F /* CallService.swift in Sources */,
 				941509CA1FFE2B2A0022B0EC /* WebRTCCallService.swift in Sources */,
 				941509CC1FFE2E8D0022B0EC /* WebRTCCall.swift in Sources */,
@@ -442,7 +438,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

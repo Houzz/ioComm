@@ -14,7 +14,7 @@ public protocol LiveDesignRepresentativeClaimedSessionSocketDelegate : class {
     
     // MARK: Sketch
     
-    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didSetSketchWith sketchID: String, galleryID: String)
+    @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didSetSketchWith session: LiveDesignSession)
     
     @objc optional func liveDesignRepresentativeClaimedSocket(_ socket: LiveDesignRepresentativeClaimedSessionSocketProtocol, didRequestRefreshForSession session: LiveDesignSession)
     
@@ -34,12 +34,12 @@ public protocol LiveDesignRepresentativeClaimedSessionSocketDelegate : class {
     /**
      Called when the rep pressed “AddToCart” button in the uiu
      */
-    func invokeAddToCart()
+    func invokeAddToCart(with session: LiveDesignSession?)
 
     /**
      Should be called when the rep saves the sketch.
      */
-    func refresh()
+    func refresh(with session: LiveDesignSession?)
     
     /**
      Hangup
@@ -74,12 +74,20 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     
     // Mark:
     
-    func invokeAddToCart() {
-        socket.emit("session.invokeAddAllToCart", session.dictionary());
+    func invokeAddToCart(with session: LiveDesignSession?) {
+        if let session = session {
+            self.session = session
+        }
+        
+        socket.emit("session.invokeAddAllToCart", self.session.dictionary());
     }
     
-    func refresh() {
-            socket.emit("session.refresh", session.dictionary())
+    func refresh(with session: LiveDesignSession?) {
+        if let session = session {
+            self.session = session
+        }
+        
+        socket.emit("session.refresh", self.session.dictionary())
     }
     
     func close() {
@@ -117,12 +125,8 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     }
     
     private func onSetSketch(with session: LiveDesignSession, payload: [String : Any]) {
-        self.session = session
-        
-        let sketchID = payload["SketchId"] as! String
-        let galleryID = payload["GalleryId"] as! String
-        
-        delegate?.liveDesignRepresentativeClaimedSocket?(self, didSetSketchWith: sketchID, galleryID: galleryID)
+        self.session = session        
+        delegate?.liveDesignRepresentativeClaimedSocket?(self, didSetSketchWith: session)
     }
     
     private func onClose(reason: SocketServiceReason) {

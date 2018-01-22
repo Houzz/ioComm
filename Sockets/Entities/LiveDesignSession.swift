@@ -10,14 +10,20 @@ import Foundation
 
 open class LiveDesignSession: NSObject {
     
-    public var status: String?      
-    public var identifier: String
-    public var userClientID: String?
-    public var repClientID: String?
-    public var sketchID: String?
-    public var galleryID: String?
-    public var user: LiveDesignUser?
-    public var representative: LiveDesignUser?
+//    enum Status {
+//        case waiting    // Waiting
+//    }
+    
+    private(set) public var status: String? // change to enum
+    private(set) public var identifier: String
+    private(set) public var userClientID: String?
+    private(set) public var repClientID: String?
+    private(set) public var sketchID: String?
+    private(set) public var galleryID: String?
+    private(set) public var productID: String?
+    private(set) public var allowsUserInteraction: Bool
+    private(set) public var user: LiveDesignUser?
+    private(set) public var representative: LiveDesignUser?
     
     public required init(payload: [String : Any]) {
         status                  = payload["Status"] as! String?
@@ -26,7 +32,10 @@ open class LiveDesignSession: NSObject {
         repClientID             = payload["RepClientId"] as! String?
         galleryID               = payload["GalleryId"] as! String?
         sketchID                = payload["SketchId"] as! String?
+        productID               = payload["SpaceId"] as! String?
 
+        allowsUserInteraction   =  (payload["AllowUserInteraction"] as! String) == "true"
+        
         user                    = LiveDesignUser(payload: payload["User"])
         representative          = LiveDesignUser(payload: payload["RepUser"])
         
@@ -57,5 +66,14 @@ open class LiveDesignSession: NSObject {
         
         return dictionary
     }
+    
+}
 
+public extension LiveDesignSession {
+    
+    public func set(galleryID: String, sketchID: String) {
+        self.galleryID = galleryID
+        self.sketchID = sketchID
+    }
+    
 }

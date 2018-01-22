@@ -12,11 +12,11 @@ import SocketIO
 @objc
 public protocol LiveDesignUserSocketDelegate: class {
 
-    @objc optional func liveDesignUserSocketDidRequestAddAllToCart(_ socket: LiveDesignUserSocketProtocol)
+    @objc optional func liveDesignUserSocketDidRequestAddAllToCart(_ socket: LiveDesignUserSocketProtocol, with session: LiveDesignSession)
 
-    @objc optional func liveDesignUserSocketDidRequestRefresh(_ socket: LiveDesignUserSocketProtocol)
+    @objc optional func liveDesignUserSocketDidRequestRefresh(_ socket: LiveDesignUserSocketProtocol, with session: LiveDesignSession)
     
-    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentative representative: LiveDesignUser)
+    @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClaimedByRepresentativeWith session: LiveDesignSession)
     
     @objc optional func liveDesignUserSocket(_ socket: LiveDesignUserSocketProtocol, wasClosedDueTo reason: SocketServiceReason)
     
@@ -35,17 +35,17 @@ public protocol LiveDesignUserSocketProtocol {
     /**
      Register the user to the livedesign queue.
      */
-    func register(with user: LiveDesignUser, completion: @escaping (LiveDesignSession?)->())
+    func register(with user: LiveDesignUser, productID: String, completion: @escaping (LiveDesignSession?)->())
     
     /**
      Call when the user app makes the first setSketch and receives sketchId.
      */
-    func setSketch(sketchID: String, galleryID: String)
+    func setSketch(with session: LiveDesignSession)
     
     /**
      Call when the user takes another photo.
      */
-    func refresh()
+    func refresh(with session: LiveDesignSession?)
     
     /**
      Hangup.
@@ -74,13 +74,13 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     // Mark: SocketManagerProtocol
     
-    func register(with user: LiveDesignUser, completion: @escaping (LiveDesignSession?)->()) {
+    func register(with user: LiveDesignUser, productID: String, completion: @escaping (LiveDesignSession?)->()) {
         
         if socket.status == .disconnected {
             socket.connect()
             return
         }
-        socket.emitWithAck("session.register", user.dictionary(), "").timingOut(after: 10) { [weak self] payload in
+        socket.emitWithAck("session.register", user.dictionary(), productID).timingOut(after: 10) { [weak self] payload in
 
             if let contents = payload[0] as? [String : Any] {
                 self?.session = LiveDesignSession(payload: contents)
@@ -97,18 +97,18 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
         }
     }
     
-    func setSketch(sketchID: String, galleryID: String) {
-        self.session?.sketchID = sketchID
-        self.session?.galleryID = galleryID
-        
-        if let dictionary = self.session?.dictionary() {
-            socket.emit("session.setSketch", dictionary);
-        }
+    func setSketch(with session: LiveDesignSession) {
+        self.session = session
+        socket.emit("session.setSketch", session.dictionary());
     }
     
-    func refresh() {
-        if let dictionary = self.session?.dictionary() {
-            socket.emit("session.refresh", dictionary)
+    func refresh(with session: LiveDesignSession?) {
+        if let session = session {
+            self.session = session
+        }
+        
+        if let session = self.session {
+            socket.emit("session.refresh", session.dictionary())
         }
     }
 
@@ -151,16 +151,16 @@ internal class LiveDesignUserSocketManager: NSObject, LiveDesignUserSocketProtoc
     
     private func onClaim(with session: LiveDesignSession) {
         self.session = session
-        delegate?.liveDesignUserSocket?(self, wasClaimedByRepresentative: session.representative!)
+        delegate?.liveDesignUserSocket?(self, wasClaimedByRepresentativeWith: session)
     }
     
     private func onInvokeAddAllToCart() {
-        delegate?.liveDesignUserSocketDidRequestAddAllToCart?(self)
+        delegate?.liveDesignUserSocketDidRequestAddAllToCart?(self, with: self.session!)
     }
     
     private func onRefresh(with session: LiveDesignSession) {
         self.session = session
-        delegate?.liveDesignUserSocketDidRequestRefresh?(self)
+        delegate?.liveDesignUserSocketDidRequestRefresh?(self, with: session)
     }
     
     private func onClose(reason: SocketServiceReason) {
