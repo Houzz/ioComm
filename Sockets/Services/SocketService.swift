@@ -44,26 +44,9 @@ public final class SocketService: NSObject {
      */
     static public let shared = SocketService(url: URL(string: "https://glacial-temple-59524.herokuapp.com/")!)
     
-    /**
-     Call service that is associated with sockets.
-     */
-    private(set) public lazy var callService: CallService = {
-        return self.configurableCallService
-    }()
-    
-    internal lazy var configurableCallService: ConfigurableCallService = {
-        return WebRTCCallService(socketService: self)
-    }()
-    
     public var timeout: TimeInterval = 2.0    
     public var userSocket: LiveDesignUserSocketProtocol?
     public var representativeSocket: LiveDesignRepresentativeSocketProtocol?
-    
-    
-    internal var onSocketChange: ((SocketIOClient?)->())?
-    internal weak var socket: SocketIOClient? {
-        didSet { onSocketChange?(socket) }
-    }
     
     fileprivate let url: URL
     
@@ -75,15 +58,12 @@ public final class SocketService: NSObject {
     public func liveDesignUserSocket(_ completion: @escaping ((LiveDesignUserSocketProtocol?)->())) {
         SocketManager.connectedManager(url: url, config:  [.log(true), .reconnects(true)], timeout: self.timeout) { manager in
             if let manager = manager {
-                self.socket = manager.defaultSocket
-                self.userSocket = LiveDesignUserSocketManager(socket: manager.defaultSocket, callService: self.configurableCallService , onClose: { [weak self] socket in
+                self.userSocket = LiveDesignUserSocketManager(socket: manager.defaultSocket , onClose: { [weak self] socket in
                     self?.userSocket = nil
-                    self?.socket = nil
                 })
                 completion(self.userSocket)
             } else {
                 self.userSocket = nil
-                self.socket = nil
                 completion(nil)
             }
         }
@@ -92,15 +72,12 @@ public final class SocketService: NSObject {
     public func liveDesignRepresentativeSocket(_ completion: @escaping ((LiveDesignRepresentativeSocketProtocol?)->())) {
         SocketManager.connectedManager(url: url, config:  [.log(true), .reconnects(true)], timeout: self.timeout) { manager in
             if let manager = manager {
-                self.socket = manager.defaultSocket
-                self.representativeSocket = LiveDesignRepresentativeSocketManager(socket: manager.defaultSocket, callService: self.configurableCallService, onClose: { [weak self] socket in
+                self.representativeSocket = LiveDesignRepresentativeSocketManager(socket: manager.defaultSocket, onClose: { [weak self] socket in
                     self?.representativeSocket = nil
-                    self?.socket = nil
                 })
                 completion(self.representativeSocket)
             } else {
                 self.representativeSocket = nil
-                self.socket = nil
                 completion(nil)
             }
         }

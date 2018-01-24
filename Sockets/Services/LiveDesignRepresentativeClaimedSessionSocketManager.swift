@@ -53,21 +53,14 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     weak var delegate: LiveDesignRepresentativeClaimedSessionSocketDelegate?
     
     let socket: SocketIOClient
-    let callService: ConfigurableCallService
     var session: LiveDesignSession
     let onClose: ((LiveDesignRepresentativeClaimedSessionSocketManager)->())?   // remove if singelton removed
     
-    required init(socket: SocketIOClient, callService: ConfigurableCallService, session: LiveDesignSession, onClose: ((LiveDesignRepresentativeClaimedSessionSocketManager)->())? = nil) {
+    required init(socket: SocketIOClient, session: LiveDesignSession, onClose: ((LiveDesignRepresentativeClaimedSessionSocketManager)->())? = nil) {
         self.socket = socket
-        self.callService = callService
         self.session = session
         self.onClose = onClose
         super.init()
-        
-        if let repClientID = session.repClientID, let user = session.user, let userID = session.userClientID {
-            callService.start(withIdentifier: repClientID)
-            callService.associate(identifier: userID, withUser: user)
-        }
         
         registerCallbacks()
     }
@@ -131,7 +124,6 @@ internal class LiveDesignRepresentativeClaimedSessionSocketManager : NSObject, L
     
     private func onClose(reason: SocketServiceReason) {
         DispatchQueue.main.async {
-            self.callService.disconnect()
             self.onClose?(self)
             self.delegate?.liveDesignRepresentativeClaimedSocket?(self, wasClosedDueTo: reason)
         }
